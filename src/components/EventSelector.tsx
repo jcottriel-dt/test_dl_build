@@ -16,96 +16,362 @@ interface EventSelectorProps {
 }
 
 const GA4_EVENTS = [
+  // Core Navigation & Page Events
   {
     name: "page_view",
     category: "page",
-    description: "When a user views a page",
+    description:
+      "Automatically triggered when a user views a page or screen. The foundational event for tracking site/app usage.",
+    example: "Homepage visit, product detail page view",
   },
   {
-    name: "scroll",
+    name: "first_visit",
+    category: "page",
+    description:
+      "Triggered when a user visits your site for the first time. Used for new visitor attribution and onboarding tracking.",
+    example: "New user landing on homepage for first time",
+  },
+  {
+    name: "session_start",
+    category: "session",
+    description:
+      "Automatically triggered when a user starts a new session. Fundamental for session-based analytics.",
+    example: "User opens app or returns after 30+ minutes inactivity",
+  },
+
+  // User Engagement & Interaction
+  {
+    name: "user_engagement",
     category: "engagement",
-    description: "When a user scrolls to the bottom of a page",
+    description:
+      "Triggered when user actively engages with content. Used to measure meaningful interactions beyond basic page views.",
+    example: "User scrolls, clicks, or spends significant time on page",
   },
   {
     name: "click",
     category: "engagement",
-    description: "When a user clicks on an element",
+    description:
+      "Triggered when user clicks on tracked elements like buttons, links, or CTAs. Essential for interaction analysis.",
+    example: "Header navigation click, CTA button click, external link click",
+  },
+  {
+    name: "scroll",
+    category: "engagement",
+    description:
+      "Triggered when user scrolls to specific page depths (25%, 50%, 75%, 100%). Measures content engagement.",
+    example: "User scrolls to 75% of article, reaches bottom of product page",
   },
   {
     name: "file_download",
     category: "engagement",
-    description: "When a user downloads a file",
+    description:
+      "Triggered when user downloads files like PDFs, documents, or media. Tracks content consumption.",
+    example:
+      "PDF brochure download, product catalog download, whitepaper download",
   },
+  {
+    name: "select_content",
+    category: "engagement",
+    description:
+      "Triggered when user selects specific content or navigates to content sections. Tracks content preferences.",
+    example: "Selecting blog post, choosing product category, picking video",
+  },
+
+  // Search & Discovery
+  {
+    name: "search",
+    category: "search",
+    description:
+      "Triggered when user performs a search query. Essential for understanding user intent and content gaps.",
+    example:
+      "Site search for 'diabetes medication', product search for 'blood pressure monitor'",
+  },
+  {
+    name: "view_search_results",
+    category: "search",
+    description:
+      "Triggered when search results are displayed to user. Tracks search effectiveness and result relevance.",
+    example:
+      "Drug search returns 15 results, product search shows filtered results",
+  },
+  {
+    name: "select_item",
+    category: "search",
+    description:
+      "Triggered when user selects an item from search results or lists. Measures search success and item appeal.",
+    example: "Clicking on search result, selecting from dropdown suggestions",
+  },
+
+  // Forms & Lead Generation
   {
     name: "form_start",
     category: "form",
-    description: "When a user begins to fill out a form",
+    description:
+      "Triggered when user begins filling out a form. Critical for conversion funnel analysis and form optimization.",
+    example:
+      "Starting contact form, beginning signup process, starting patient enrollment",
   },
   {
     name: "form_submit",
     category: "form",
-    description: "When a user submits a form",
+    description:
+      "Triggered when user successfully submits a form. Key conversion event for lead generation and completion tracking.",
+    example:
+      "Contact form submission, newsletter signup, patient information form completion",
   },
-  { name: "login", category: "user", description: "When a user logs in" },
+  {
+    name: "generate_lead",
+    category: "conversion",
+    description:
+      "Triggered when user action generates a qualified lead. High-value conversion event for business tracking.",
+    example:
+      "Requesting consultation, downloading gated content, requesting drug samples",
+  },
+
+  // User Account & Authentication
+  {
+    name: "login",
+    category: "user",
+    description:
+      "Triggered when user successfully logs into their account. Tracks user engagement and retention.",
+    example: "Healthcare provider portal login, patient account access",
+  },
   {
     name: "sign_up",
     category: "user",
-    description: "When a user creates an account",
+    description:
+      "Triggered when user creates a new account. Critical conversion event for user acquisition tracking.",
+    example:
+      "Healthcare provider registration, patient portal signup, newsletter subscription",
   },
   {
-    name: "purchase",
+    name: "join_group",
+    category: "user",
+    description:
+      "Triggered when user joins a group, program, or community. Tracks program enrollment and community engagement.",
+    example:
+      "Joining patient support group, enrolling in savings program, subscribing to specialty updates",
+  },
+
+  // E-commerce & Shopping
+  {
+    name: "view_item",
     category: "ecommerce",
-    description: "When a user completes a purchase",
+    description:
+      "Triggered when user views a product or item detail page. Fundamental for product performance analysis.",
+    example:
+      "Viewing medication details, examining medical device specifications",
+  },
+  {
+    name: "view_item_list",
+    category: "ecommerce",
+    description:
+      "Triggered when user views a list of products or items. Tracks browsing behavior and category performance.",
+    example:
+      "Viewing search results, browsing product category, seeing related items",
   },
   {
     name: "add_to_cart",
     category: "ecommerce",
-    description: "When a user adds items to cart",
+    description:
+      "Triggered when user adds items to shopping cart. Key pre-purchase conversion indicator.",
+    example:
+      "Adding prescription to cart, selecting medical supplies, choosing insurance plan",
   },
   {
     name: "remove_from_cart",
     category: "ecommerce",
-    description: "When a user removes items from cart",
+    description:
+      "Triggered when user removes items from cart. Important for cart abandonment analysis and pricing optimization.",
+    example: "Removing expensive medication, changing insurance selection",
   },
   {
-    name: "view_item",
+    name: "view_cart",
     category: "ecommerce",
-    description: "When a user views an item",
+    description:
+      "Triggered when user views their shopping cart contents. Tracks purchase intent and cart engagement.",
+    example:
+      "Reviewing selected medications, checking total costs, viewing insurance coverage",
+  },
+  {
+    name: "add_to_wishlist",
+    category: "ecommerce",
+    description:
+      "Triggered when user saves items for later purchase. Tracks product interest and future purchase intent.",
+    example:
+      "Saving medication for future reference, bookmarking medical device",
   },
   {
     name: "begin_checkout",
     category: "ecommerce",
-    description: "When a user begins checkout",
+    description:
+      "Triggered when user starts the checkout process. Critical conversion funnel event for purchase analysis.",
+    example:
+      "Starting prescription order, beginning insurance enrollment, initiating payment process",
   },
   {
-    name: "search",
-    category: "engagement",
-    description: "When a user searches",
+    name: "add_payment_info",
+    category: "ecommerce",
+    description:
+      "Triggered when user adds payment information during checkout. Late-stage conversion indicator.",
+    example:
+      "Adding credit card details, selecting insurance payment method, entering bank information",
+  },
+  {
+    name: "add_shipping_info",
+    category: "ecommerce",
+    description:
+      "Triggered when user adds shipping/delivery information. Important step in fulfillment process tracking.",
+    example:
+      "Adding home delivery address, selecting pharmacy pickup location, choosing shipping method",
+  },
+  {
+    name: "purchase",
+    category: "ecommerce",
+    description:
+      "Triggered when user completes a purchase transaction. The ultimate conversion event for revenue tracking.",
+    example:
+      "Prescription purchase completion, insurance plan enrollment, medical device order",
+  },
+  {
+    name: "refund",
+    category: "ecommerce",
+    description:
+      "Triggered when a purchase refund is processed. Important for financial reconciliation and customer satisfaction.",
+    example:
+      "Medication return refund, insurance plan cancellation refund, service fee reversal",
+  },
+
+  // Promotions & Marketing
+  {
+    name: "view_promotion",
+    category: "marketing",
+    description:
+      "Triggered when user views a promotional offer or advertisement. Tracks marketing campaign effectiveness.",
+    example:
+      "Viewing drug discount offer, seeing savings program banner, promotional popup display",
+  },
+  {
+    name: "select_promotion",
+    category: "marketing",
+    description:
+      "Triggered when user interacts with promotional content. Measures promotion engagement and conversion potential.",
+    example:
+      "Clicking savings program CTA, selecting discount offer, choosing promotional plan",
+  },
+  {
+    name: "ad_impression",
+    category: "marketing",
+    description:
+      "Triggered when an advertisement is displayed to user. Fundamental for ad campaign measurement and reach analysis.",
+    example:
+      "Drug advertisement display, banner ad impression, sponsored content view",
+  },
+
+  // Content & Media
+  {
+    name: "view_content",
+    category: "content",
+    description:
+      "Triggered when user views specific content pieces. Tracks content performance and user interests.",
+    example:
+      "Reading drug information article, viewing patient education video, accessing treatment guidelines",
   },
   {
     name: "share",
-    category: "engagement",
-    description: "When a user shares content",
+    category: "content",
+    description:
+      "Triggered when user shares content via social media or other channels. Measures content virality and engagement.",
+    example:
+      "Sharing health article on Facebook, emailing drug information, forwarding patient resources",
   },
+
+  // Virtual Economy & Gamification
+  {
+    name: "earn_virtual_currency",
+    category: "gamification",
+    description:
+      "Triggered when user earns points, credits, or virtual rewards. Used in loyalty programs and patient engagement apps.",
+    example:
+      "Earning wellness points, receiving medication adherence rewards, getting program credits",
+  },
+  {
+    name: "spend_virtual_currency",
+    category: "gamification",
+    description:
+      "Triggered when user spends earned points or credits. Tracks reward program utilization and value realization.",
+    example:
+      "Redeeming wellness points, using program credits, spending loyalty rewards",
+  },
+
+  // Educational & Onboarding
+  {
+    name: "tutorial_begin",
+    category: "education",
+    description:
+      "Triggered when user starts a tutorial or educational sequence. Important for user onboarding and education tracking.",
+    example:
+      "Starting medication instruction tutorial, beginning insurance navigation guide, starting health assessment",
+  },
+  {
+    name: "tutorial_complete",
+    category: "education",
+    description:
+      "Triggered when user completes a tutorial or educational program. Measures educational effectiveness and completion rates.",
+    example:
+      "Completing injection training, finishing insurance enrollment tutorial, passing medication quiz",
+  },
+
+  // Technical & System Events
+  {
+    name: "error",
+    category: "technical",
+    description:
+      "Triggered when system errors occur or user encounters technical issues. Critical for site reliability and UX monitoring.",
+    example:
+      "Form submission error, payment processing failure, page load timeout, API connection error",
+  },
+  {
+    name: "set_data",
+    category: "technical",
+    description:
+      "Triggered when data is set or updated in the system. Used for data management and system state tracking.",
+    example:
+      "User preference update, profile information change, system configuration update",
+  },
+
+  // Legacy Events (Maintained for compatibility)
   {
     name: "video_start",
     category: "media",
-    description: "When a user starts playing a video",
+    description:
+      "Triggered when user starts playing a video. Essential for video content engagement analysis.",
+    example:
+      "Starting patient education video, playing drug mechanism animation, beginning webinar",
   },
   {
     name: "video_progress",
     category: "media",
-    description: "When a user reaches video progress milestones",
+    description:
+      "Triggered at video progress milestones (25%, 50%, 75%, 100%). Tracks video engagement depth.",
+    example:
+      "Reaching 50% of educational video, completing 75% of treatment explanation",
   },
   {
     name: "video_complete",
     category: "media",
-    description: "When a user completes watching a video",
+    description:
+      "Triggered when user completes watching a video. Measures full content consumption and engagement quality.",
+    example:
+      "Finishing medication instruction video, completing patient testimonial, watching full webinar",
   },
   {
     name: "custom_event",
     category: "custom",
-    description: "Custom event for specific tracking needs",
+    description:
+      "Custom-defined event for specific business requirements. Flexible event for unique tracking needs.",
+    example:
+      "Drug interaction check, dosage calculator use, appointment scheduling, specialty program enrollment",
   },
 ];
 
