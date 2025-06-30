@@ -845,43 +845,6 @@ const PARAMETERS: Parameter[] = [
     example: "Windows",
   },
 
-  // Event Specific
-  {
-    name: "event_category",
-    type: "string",
-    category: "event",
-    description: "Category of the event",
-    example: "engagement",
-  },
-  {
-    name: "event_action",
-    type: "string",
-    category: "event",
-    description: "Action performed",
-    example: "click",
-  },
-  {
-    name: "event_label",
-    type: "string",
-    category: "event",
-    description: "Event label for context",
-    example: "header_nav",
-  },
-  {
-    name: "value",
-    type: "number",
-    category: "event",
-    description: "Numeric value associated with event",
-    example: "10.99",
-  },
-  {
-    name: "currency",
-    type: "string",
-    category: "event",
-    description: "Currency code",
-    example: "USD",
-  },
-
   // Form Data
   {
     name: "form_id",
