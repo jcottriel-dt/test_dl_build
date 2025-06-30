@@ -24,29 +24,7 @@ const GA4_EVENTS = [
       "Automatically triggered when a user views a page or screen. The foundational event for tracking site/app usage.",
     example: "Homepage visit, product detail page view",
   },
-  {
-    name: "first_visit",
-    category: "page",
-    description:
-      "Triggered when a user visits your site for the first time. Used for new visitor attribution and onboarding tracking.",
-    example: "New user landing on homepage for first time",
-  },
-  {
-    name: "session_start",
-    category: "session",
-    description:
-      "Automatically triggered when a user starts a new session. Fundamental for session-based analytics.",
-    example: "User opens app or returns after 30+ minutes inactivity",
-  },
-
   // User Engagement & Interaction
-  {
-    name: "user_engagement",
-    category: "engagement",
-    description:
-      "Triggered when user actively engages with content. Used to measure meaningful interactions beyond basic page views.",
-    example: "User scrolls, clicks, or spends significant time on page",
-  },
   {
     name: "click",
     category: "engagement",
