@@ -959,6 +959,17 @@ const CATEGORY_COLORS = {
   event: "bg-purple-500/10 text-purple-600 border-purple-500/20",
   form: "bg-pink-500/10 text-pink-600 border-pink-500/20",
   content: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
+  drug: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  hcp: "bg-teal-500/10 text-teal-600 border-teal-500/20",
+  insurance: "bg-blue-700/10 text-blue-700 border-blue-700/20",
+  professional: "bg-indigo-700/10 text-indigo-700 border-indigo-700/20",
+  interaction: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  search: "bg-violet-500/10 text-violet-600 border-violet-500/20",
+  program: "bg-rose-500/10 text-rose-600 border-rose-500/20",
+  testing: "bg-slate-500/10 text-slate-600 border-slate-500/20",
+  commerce: "bg-green-700/10 text-green-700 border-green-700/20",
+  support: "bg-red-500/10 text-red-600 border-red-500/20",
+  list: "bg-purple-700/10 text-purple-700 border-purple-700/20",
 };
 
 const TYPE_COLORS = {
