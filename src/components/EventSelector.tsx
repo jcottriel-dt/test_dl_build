@@ -264,24 +264,6 @@ const GA4_EVENTS = [
       "Sharing health article on Facebook, emailing drug information, forwarding patient resources",
   },
 
-  // Virtual Economy & Gamification
-  {
-    name: "earn_virtual_currency",
-    category: "gamification",
-    description:
-      "Triggered when user earns points, credits, or virtual rewards. Used in loyalty programs and patient engagement apps.",
-    example:
-      "Earning wellness points, receiving medication adherence rewards, getting program credits",
-  },
-  {
-    name: "spend_virtual_currency",
-    category: "gamification",
-    description:
-      "Triggered when user spends earned points or credits. Tracks reward program utilization and value realization.",
-    example:
-      "Redeeming wellness points, using program credits, spending loyalty rewards",
-  },
-
   // Educational & Onboarding
   {
     name: "tutorial_begin",
