@@ -1027,17 +1027,17 @@ export default function ParameterList({ onParameterDrag }: ParameterListProps) {
                 key={parameter.name}
                 draggable
                 onDragStart={(e) => handleDragStart(e, parameter)}
-                className="group p-3 rounded-lg border-2 border-dashed border-transparent cursor-move transition-all duration-200 hover:border-brand-500/50 hover:bg-brand-500/5"
+                className="group p-3 rounded-lg border-2 border-dashed border-transparent cursor-move transition-all duration-200 hover:border-brand-500/50 hover:bg-brand-500/5 overflow-hidden"
               >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="font-mono text-sm font-medium">
+                <div className="flex items-start justify-between gap-2 mb-2 min-w-0">
+                  <span className="font-mono text-sm font-medium truncate">
                     {parameter.name}
                   </span>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 flex-shrink-0">
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-xs",
+                        "text-xs whitespace-nowrap",
                         TYPE_COLORS[parameter.type as keyof typeof TYPE_COLORS],
                       )}
                     >
@@ -1046,7 +1046,7 @@ export default function ParameterList({ onParameterDrag }: ParameterListProps) {
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-xs",
+                        "text-xs whitespace-nowrap",
                         CATEGORY_COLORS[
                           parameter.category as keyof typeof CATEGORY_COLORS
                         ],
