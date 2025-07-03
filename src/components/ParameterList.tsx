@@ -26,21 +26,14 @@ export interface Parameter {
 const PARAMETERS: Parameter[] = [
   // Healthcare/Pharmaceutical - Drug Information
   {
-    name: "drugName",
-    type: "string",
-    category: "drug",
-    description: "Full name of the pharmaceutical drug",
-    example: "Metformin Hydrochloride",
-  },
-  {
     name: "drug_name",
     type: "string",
     category: "drug",
-    description: "Alternative drug name parameter",
-    example: "Lisinopril",
+    description: "Generic or full name of the pharmaceutical drug",
+    example: "Metformin Hydrochloride",
   },
   {
-    name: "drugBrand",
+    name: "drug_brand",
     type: "string",
     category: "drug",
     description: "Brand name of the drug",
