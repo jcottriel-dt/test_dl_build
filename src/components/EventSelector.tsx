@@ -410,19 +410,19 @@ export default function EventSelector({
                 onDragStart={(e) => handleDragStart(e, event.name)}
                 onClick={() => onEventSelect(event.name)}
                 className={cn(
-                  "group p-3 rounded-lg border-2 border-dashed border-transparent cursor-move transition-all duration-200 hover:border-brand-500/50 hover:bg-brand-500/5",
+                  "group p-3 rounded-lg border-2 border-dashed border-transparent cursor-move transition-all duration-200 hover:border-brand-500/50 hover:bg-brand-500/5 overflow-hidden",
                   selectedEvent === event.name &&
                     "border-brand-500 bg-brand-500/10",
                 )}
               >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="font-mono text-sm font-medium">
+                <div className="flex items-start justify-between gap-2 mb-2 min-w-0">
+                  <span className="font-mono text-sm font-medium truncate">
                     {event.name}
                   </span>
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs",
+                      "text-xs whitespace-nowrap flex-shrink-0",
                       CATEGORY_COLORS[
                         event.category as keyof typeof CATEGORY_COLORS
                       ],
