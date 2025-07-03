@@ -187,7 +187,7 @@ export default function SchemaBuilder({
         </div>
 
         {/* Schema Preview and Markdown Export - Right Side */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
           <div className="sticky top-32 space-y-4 max-h-[calc(100vh-160px)] overflow-y-auto pb-20">
             <SchemaPreview
               eventName={selectedEvent}
