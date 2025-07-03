@@ -165,7 +165,7 @@ export default function SchemaBuilder({
       </div>
 
       {/* Main Content Area - 2 Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 pb-32">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 pb-32">
         {/* Object Blocks - Left Side */}
         <div className="lg:col-span-3">
           <div className="sticky top-32 grid grid-cols-1 md:grid-cols-2 gap-4 mb-20">
