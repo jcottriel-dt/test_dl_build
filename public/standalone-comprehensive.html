@@ -707,6 +707,10 @@
                       \`;
                       container.appendChild(div);
                   });
+                  console.log('Events rendered successfully');
+                  } catch (error) {
+                      console.error('Error rendering events:', error);
+                  }
               }
 
               function loadParameters() {
