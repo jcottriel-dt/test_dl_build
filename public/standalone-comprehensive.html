@@ -1627,6 +1627,165 @@
         schema += `*/`;
 
         output.textContent = schema;
+
+        // Also update the schema preview
+        generateSchemaPreview();
+      }
+
+      function generateSchemaPreview() {
+        const preview = document.getElementById("schemaPreview");
+        const eventBadge = document.getElementById("previewEventBadge");
+        const paramCount = document.getElementById("previewParamCount");
+        const copyBtn = document.getElementById("copyPreviewBtn");
+
+        if (!selectedEvent) {
+          preview.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #9ca3af;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👁️</div>
+                        <p>Select an event to preview the data layer schema</p>
+                    </div>
+                `;
+          eventBadge.style.display = "none";
+          paramCount.style.display = "none";
+          copyBtn.style.display = "none";
+          return;
+        }
+
+        // Create schema object
+        const schemaObj = { event: selectedEvent.name };
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            schemaObj[blockKey] = {};
+            objectBlocks[blockKey].forEach((param) => {
+              schemaObj[blockKey][param.name] = getExampleValue(param);
+            });
+          }
+        });
+
+        // Update badges
+        const totalParams = Object.values(objectBlocks).reduce(
+          (sum, params) => sum + params.length,
+          0,
+        );
+        eventBadge.textContent = selectedEvent.name;
+        eventBadge.style.display = "inline-block";
+        paramCount.textContent = `${totalParams} parameter${totalParams !== 1 ? "s" : ""}`;
+        paramCount.style.display = "inline-block";
+        copyBtn.style.display = "inline-block";
+
+        // Generate syntax-highlighted preview
+        preview.innerHTML = formatSchemaWithSyntaxHighlighting(schemaObj);
+      }
+
+      function getExampleValue(param) {
+        if (param.example) {
+          try {
+            if (param.type === "array" || param.type === "object") {
+              return JSON.parse(param.example);
+            }
+            if (param.type === "boolean") {
+              return param.example === "true";
+            }
+            if (param.type === "number") {
+              return parseFloat(param.example);
+            }
+            return param.example;
+          } catch {
+            return param.example;
+          }
+        }
+
+        switch (param.type) {
+          case "string":
+            return "string_value";
+          case "number":
+            return 123;
+          case "boolean":
+            return true;
+          case "array":
+            return ["item1", "item2"];
+          case "object":
+            return { key: "value" };
+          default:
+            return "value";
+        }
+      }
+
+      function formatSchemaWithSyntaxHighlighting(schemaObj) {
+        let html = '<span class="syntax-keyword">dataLayer</span>';
+        html += '<span class="syntax-punctuation">.</span>';
+        html += '<span class="syntax-method">push</span>';
+        html += '<span class="syntax-punctuation">(</span>';
+        html += '<span class="syntax-brace">{</span>';
+
+        const entries = Object.entries(schemaObj);
+        entries.forEach(([key, value], index) => {
+          html += `\n  <span class="syntax-property">"${key}"</span><span class="syntax-punctuation">: </span>`;
+          html += formatValue(value, 1);
+          if (index < entries.length - 1) {
+            html += '<span class="syntax-punctuation">,</span>';
+          }
+        });
+
+        html += '\n<span class="syntax-brace">}</span>';
+        html += '<span class="syntax-punctuation">);</span>';
+
+        return html;
+      }
+
+      function formatValue(value, indent) {
+        const spaces = "  ".repeat(indent);
+
+        if (typeof value === "string") {
+          return `<span class="syntax-string">"${value}"</span>`;
+        } else if (typeof value === "number") {
+          return `<span class="syntax-number">${value}</span>`;
+        } else if (typeof value === "boolean") {
+          return `<span class="syntax-boolean">${value}</span>`;
+        } else if (Array.isArray(value)) {
+          return `<span class="syntax-array">[${value.map((v) => `"${v}"`).join(", ")}]</span>`;
+        } else if (typeof value === "object" && value !== null) {
+          let html = '<span class="syntax-brace">{</span>';
+          const entries = Object.entries(value);
+          entries.forEach(([subKey, subValue], subIndex) => {
+            html += `\n${spaces}  <span class="syntax-property">"${subKey}"</span><span class="syntax-punctuation">: </span>`;
+            html += formatValue(subValue, indent + 1);
+            if (subIndex < entries.length - 1) {
+              html += '<span class="syntax-punctuation">,</span>';
+            }
+          });
+          html += `\n${spaces}<span class="syntax-brace">}</span>`;
+          return html;
+        }
+
+        return `<span class="syntax-string">"${value}"</span>`;
+      }
+
+      function copySchemaPreview() {
+        if (!selectedEvent) return;
+
+        const schemaObj = { event: selectedEvent.name };
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            schemaObj[blockKey] = {};
+            objectBlocks[blockKey].forEach((param) => {
+              schemaObj[blockKey][param.name] = getExampleValue(param);
+            });
+          }
+        });
+
+        const schemaCode = `dataLayer.push(${JSON.stringify(schemaObj, null, 2)});`;
+
+        navigator.clipboard.writeText(schemaCode).then(() => {
+          const btn = document.getElementById("copyPreviewBtn");
+          const originalText = btn.textContent;
+          btn.textContent = "✓ Copied!";
+          btn.style.background = "#22c55e";
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = "#3b82f6";
+          }, 2000);
+        });
       }
 
       function filterEvents(searchTerm) {
