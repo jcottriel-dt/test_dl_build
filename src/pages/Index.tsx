@@ -266,11 +266,59 @@ ${jsContent}
       // Clean up
       URL.revokeObjectURL(url);
 
-      // Show success message (you could replace this with a toast notification)
+      // Show success message
       console.log("✅ Standalone HTML file downloaded successfully!");
+      console.log(`📊 File size: ${Math.round(blob.size / 1024)}KB`);
+
+      // Show user feedback
+      const feedback = document.createElement("div");
+      feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(34, 197, 94, 0.9);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 99999;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      feedback.innerHTML = `✅ Standalone HTML downloaded! (${Math.round(blob.size / 1024)}KB)`;
+      document.body.appendChild(feedback);
+
+      setTimeout(() => {
+        if (feedback.parentNode) {
+          feedback.remove();
+        }
+      }, 4000);
     } catch (error) {
       console.error("❌ Error generating standalone HTML:", error);
-      // You could show an error toast here
+
+      // Show error feedback
+      const errorFeedback = document.createElement("div");
+      errorFeedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 99999;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      errorFeedback.innerHTML = `❌ Error generating HTML: ${error.message}`;
+      document.body.appendChild(errorFeedback);
+
+      setTimeout(() => {
+        if (errorFeedback.parentNode) {
+          errorFeedback.remove();
+        }
+      }, 6000);
     }
   };
 
