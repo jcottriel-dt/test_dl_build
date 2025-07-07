@@ -111,38 +111,38 @@ const Index = () => {
     <meta name="description" content="Healthcare & Pharmaceutical GA4 DataLayer Schema Builder - Complete Standalone Version">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #f8fafc;
             min-height: 100vh;
         }
         .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
-        .header { 
-            background: rgba(255, 255, 255, 0.1); 
+        .header {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px; 
-            padding: 1.5rem 2rem; 
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
             margin-bottom: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .title { 
-            font-size: 2.5rem; 
-            font-weight: bold; 
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
             background: linear-gradient(45deg, #22c55e, #16a34a);
-            -webkit-background-clip: text; 
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .card { 
-            background: rgba(255, 255, 255, 0.1); 
+        .card {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px; 
+            border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .notice { 
+        .notice {
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 8px;
@@ -166,12 +166,12 @@ const Index = () => {
         <div class="notice">
             <h2 style="color: #60a5fa; margin-bottom: 1rem;">🎯 Complete DataLayer Builder v3.0</h2>
             <p style="margin-bottom: 1.5rem;">
-                This would contain the complete application with all 74+ healthcare parameters, 
-                35+ GA4 events, object blocks (User Data, Page Data, Event Data), drag & drop functionality, 
+                This would contain the complete application with all 74+ healthcare parameters,
+                35+ GA4 events, object blocks (User Data, Page Data, Event Data), drag & drop functionality,
                 real-time schema generation, and markdown export capabilities.
             </p>
             <p style="font-size: 0.9rem; opacity: 0.8;">
-                The full version would match all functionality from the web application, 
+                The full version would match all functionality from the web application,
                 including proper categorization, search/filtering, and professional schema building tools.
             </p>
         </div>
@@ -212,7 +212,7 @@ const Index = () => {
                     variant="outline"
                     className="text-xs bg-brand-500/10 text-brand-600 border-brand-500/20"
                   >
-                    v3.0
+                    v4.0
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground hidden sm:block">
