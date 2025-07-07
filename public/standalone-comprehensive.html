@@ -626,6 +626,9 @@
 
               // Initialize Application
               function init() {
+                  // Set generated date
+                  document.getElementById('generatedDate').textContent = 'Generated: ' + new Date().toLocaleString();
+
                   loadEvents();
                   loadParameters();
                   setupEventListeners();
