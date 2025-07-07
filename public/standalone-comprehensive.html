@@ -717,7 +717,10 @@
               }
 
               function renderParameters() {
+                  console.log('Rendering parameters...');
                   const container = document.getElementById('parametersList');
+                  console.log('Parameters container for rendering:', container);
+                  console.log('Filtered parameters count:', filteredParameters.length);
                   container.innerHTML = '';
 
                   filteredParameters.forEach(param => {
