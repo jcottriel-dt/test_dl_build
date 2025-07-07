@@ -16,18 +16,75 @@ const Index = () => {
     try {
       console.log("🔄 Generating standalone HTML with full application...");
 
-      // Fetch the built CSS and JS files
-      const cssResponse = await fetch("/assets/index-CZgB8w04.css");
-      const jsResponse = await fetch("/assets/index-CCJUgdci.js");
+      // Get the current page's CSS and JS links to find the actual asset files
+      const cssLinks = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"]'),
+      );
+      const scriptTags = Array.from(document.querySelectorAll("script[src]"));
 
-      if (!cssResponse.ok || !jsResponse.ok) {
-        throw new Error(
-          "Could not fetch build assets. Make sure the application is built.",
-        );
+      let cssContent = "";
+      let jsContent = "";
+
+      // Fetch CSS content
+      for (const link of cssLinks) {
+        try {
+          const response = await fetch(link.href);
+          if (response.ok) {
+            cssContent += (await response.text()) + "\n";
+          }
+        } catch (e) {
+          console.warn("Could not fetch CSS:", link.href);
+        }
       }
 
-      const cssContent = await cssResponse.text();
-      const jsContent = await jsResponse.text();
+      // Fetch JS content
+      for (const script of scriptTags) {
+        try {
+          if (script.src.includes("index-") || script.src.includes("main-")) {
+            const response = await fetch(script.src);
+            if (response.ok) {
+              jsContent += (await response.text()) + "\n";
+            }
+          }
+        } catch (e) {
+          console.warn("Could not fetch JS:", script.src);
+        }
+      }
+
+      // If we couldn't get assets from links, try to get them directly from the page
+      if (!cssContent || !jsContent) {
+        console.log(
+          "⚠️ Could not fetch external assets, creating functional HTML with current page state...",
+        );
+
+        // Get all computed styles from the page
+        const allStyleSheets = Array.from(document.styleSheets);
+        for (const sheet of allStyleSheets) {
+          try {
+            if (sheet.href && !sheet.href.includes("googleapis")) {
+              const response = await fetch(sheet.href);
+              if (response.ok) {
+                cssContent += (await response.text()) + "\n";
+              }
+            }
+          } catch (e) {
+            console.warn("Could not access stylesheet:", sheet.href);
+          }
+        }
+      }
+
+      // If still no content, use basic styles
+      if (!cssContent) {
+        cssContent = `
+          /* DataLayer Builder v3.0 - Essential Styles */
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.5; color: #333; }
+          .error-message {
+            padding: 2rem; text-align: center; max-width: 600px; margin: 2rem auto;
+            background: #fee2e2; border: 1px solid #dc2626; border-radius: 8px; color: #991b1b;
+          }
+        `;
+      }
 
       console.log(`📊 CSS loaded: ${Math.round(cssContent.length / 1024)}KB`);
       console.log(`📊 JS loaded: ${Math.round(jsContent.length / 1024)}KB`);
