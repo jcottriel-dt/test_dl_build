@@ -738,10 +738,17 @@
               }
 
               function renderParameters() {
-                  const container = document.getElementById('parametersList');
-                  container.innerHTML = '';
+                  try {
+                      console.log('Rendering parameters...');
+                      const container = document.getElementById('parametersList');
+                      if (!container) {
+                          throw new Error('parametersList container not found for rendering');
+                      }
 
-                  filteredParameters.forEach(param => {
+                      console.log('Filtered parameters count:', filteredParameters.length);
+                      container.innerHTML = '';
+
+                      filteredParameters.forEach(param => {
                       const div = document.createElement('div');
                       div.className = 'param-item';
                       div.draggable = true;
