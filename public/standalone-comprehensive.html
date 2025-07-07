@@ -1744,10 +1744,23 @@
         } else if (typeof value === "boolean") {
           return `<span class="syntax-boolean">${value}</span>`;
         } else if (Array.isArray(value)) {
-          return `<span class="syntax-array">[${value.map((v) => `"${v}"`).join(", ")}]</span>`;
+          if (value.length === 0) {
+            return `<span class="syntax-array">[]</span>`;
+          }
+          let html = '<span class="syntax-array">[</span>';
+          value.forEach((item, index) => {
+            if (index > 0) html += '<span class="syntax-punctuation">, </span>';
+            html += `<span class="syntax-string">"${item}"</span>`;
+          });
+          html += '<span class="syntax-array">]</span>';
+          return html;
         } else if (typeof value === "object" && value !== null) {
-          let html = '<span class="syntax-brace">{</span>';
           const entries = Object.entries(value);
+          if (entries.length === 0) {
+            return '<span class="syntax-brace">{}</span>';
+          }
+
+          let html = "\n" + spaces + '<span class="syntax-brace">{</span>';
           entries.forEach(([subKey, subValue], subIndex) => {
             html += `\n${spaces}  <span class="syntax-property">"${subKey}"</span><span class="syntax-punctuation">: </span>`;
             html += formatValue(subValue, indent + 1);
