@@ -653,17 +653,31 @@
               }
 
               function loadEvents() {
-                  const container = document.getElementById('eventsList');
-                  const categoriesContainer = document.getElementById('eventCategories');
+                  try {
+                      console.log('Loading events...');
+                      const container = document.getElementById('eventsList');
+                      const categoriesContainer = document.getElementById('eventCategories');
 
-                  // Load category filters
-                  const categories = [...new Set(GA4_EVENTS.map(e => e.category))];
-                  categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterEventsByCategory(\'\')">All</div>';
-                  categories.forEach(cat => {
-                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterEventsByCategory('\${cat}')">\${cat}</div>\`;
-                  });
+                      if (!container) {
+                          throw new Error('eventsList container not found');
+                      }
+                      if (!categoriesContainer) {
+                          throw new Error('eventCategories container not found');
+                      }
 
-                  renderEvents();
+                      // Load category filters
+                      const categories = [...new Set(GA4_EVENTS.map(e => e.category))];
+                      console.log('Event categories:', categories);
+                      categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterEventsByCategory(\'\')">All</div>';
+                      categories.forEach(cat => {
+                          categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterEventsByCategory('\${cat}')">\${cat}</div>\`;
+                      });
+
+                      renderEvents();
+                      console.log('Events loaded successfully');
+                  } catch (error) {
+                      console.error('Error loading events:', error);
+                  }
               }
 
               function renderEvents() {
