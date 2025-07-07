@@ -14,7 +14,25 @@ const Index = () => {
 
   const downloadStandaloneHTML = async () => {
     try {
-      // Generate the standalone HTML content
+      console.log("🔄 Generating standalone HTML with full application...");
+
+      // Fetch the built CSS and JS files
+      const cssResponse = await fetch("/assets/index-CZgB8w04.css");
+      const jsResponse = await fetch("/assets/index-CCJUgdci.js");
+
+      if (!cssResponse.ok || !jsResponse.ok) {
+        throw new Error(
+          "Could not fetch build assets. Make sure the application is built.",
+        );
+      }
+
+      const cssContent = await cssResponse.text();
+      const jsContent = await jsResponse.text();
+
+      console.log(`📊 CSS loaded: ${Math.round(cssContent.length / 1024)}KB`);
+      console.log(`📊 JS loaded: ${Math.round(jsContent.length / 1024)}KB`);
+
+      // Generate the complete standalone HTML with embedded assets
       const standaloneHTML = `<!doctype html>
 <html lang="en">
 <head>
@@ -26,176 +44,66 @@ const Index = () => {
     <meta name="version" content="3.0">
     <meta name="standalone" content="true">
     <meta name="generated" content="${new Date().toISOString()}">
+    <meta name="app-size" content="${Math.round((cssContent.length + jsContent.length) / 1024)}KB">
 
-    <!-- Embedded Styles -->
+    <!-- Complete DataLayer Builder v3.0 Styles -->
     <style>
-        /* DataLayer Builder v3.0 - Complete Styles */
-        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
-        .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-        .loading-box {
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 3rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            max-width: 600px;
-        }
-        .loading-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #22c55e, #16a34a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .loading-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        .features-box {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            font-size: 0.9rem;
-        }
-        .notice-box {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            font-size: 0.9rem;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(34, 197, 94, 0.3);
-            border-top: 4px solid #22c55e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+${cssContent}
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="loading-container">
-            <div class="loading-box">
-                <h1 class="loading-title">DataLayer Builder v3.0</h1>
-                <p class="loading-subtitle">
-                    Healthcare & Pharmaceutical<br>
-                    GA4 Schema Generator
-                </p>
+    <div id="root"></div>
 
-                <div class="features-box">
-                    <p style="margin: 0;">
-                        <strong>🎯 Complete Application Features:</strong><br>
-                        • 74+ Healthcare/Pharmaceutical Parameters<br>
-                        • 35+ Comprehensive GA4 Events<br>
-                        • Drag & Drop Schema Building<br>
-                        • Real-time Code Generation<br>
-                        • Markdown Documentation Export<br>
-                        • Professional GA4 Implementation Tool
-                    </p>
-                </div>
-
-                <div class="spinner"></div>
-
-                <div class="notice-box">
-                    <p style="margin: 0;">
-                        <strong>📥 Standalone HTML Generated Successfully!</strong><br>
-                        This file contains the complete DataLayer Builder application.
-                        <br><br>
-                        <strong>🚀 Ready to Use:</strong><br>
-                        • Open this file in any modern browser<br>
-                        • No internet connection required<br>
-                        • Share with clients and team members<br>
-                        • Full functionality included<br>
-                        <br>
-                        <strong>💾 Generated:</strong> ${new Date().toLocaleString()}<br>
-                        <strong>🔖 Version:</strong> v3.0 Standalone
-                    </p>
-                </div>
-
-                <p style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.7;">
-                    Loading complete application... This may take a moment on first load.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Application will load here in full version -->
+    <!-- Complete DataLayer Builder v3.0 Application -->
     <script>
-        console.log('📊 DataLayer Builder v3.0 - Standalone Version');
+${jsContent}
+    </script>
+
+    <!-- Standalone Version Info -->
+    <script>
+        console.log('🎯 DataLayer Builder v3.0 - Complete Standalone Version');
         console.log('🏥 Healthcare & Pharmaceutical GA4 Schema Generator');
         console.log('✅ Generated: ${new Date().toISOString()}');
-        console.log('💾 This is a working standalone version!');
+        console.log('📊 Total size: ${Math.round((cssContent.length + jsContent.length) / 1024)}KB');
+        console.log('🚀 Full application functionality included!');
+        console.log('💻 No internet connection required');
 
-        // Simulate loading the full application
+        // Add standalone version indicator
         document.addEventListener('DOMContentLoaded', function() {
-            const loadingContainer = document.querySelector('.loading-container');
-
-            // Add loading simulation
             setTimeout(() => {
-                if (loadingContainer) {
-                    loadingContainer.innerHTML = \`
-                        <div class="loading-box">
-                            <h1 class="loading-title">⚠️ Development Notice</h1>
-                            <div class="notice-box">
-                                <p style="margin: 0;">
-                                    <strong>📝 Standalone HTML Generated Successfully!</strong><br><br>
-                                    This file demonstrates the standalone version structure.
-                                    For a fully functional version, the complete application
-                                    assets (~685KB) would be embedded here.
-                                    <br><br>
-                                    <strong>🔧 To create full working version:</strong><br>
-                                    1. Build the application: <code>npm run build</code><br>
-                                    2. Embed the CSS and JS assets from dist/assets/<br>
-                                    3. Replace this notice with the complete application
-                                    <br><br>
-                                    <strong>📊 This standalone file includes:</strong><br>
-                                    • Proper HTML structure<br>
-                                    • All metadata and SEO tags<br>
-                                    • Loading states and user feedback<br>
-                                    • Professional presentation<br>
-                                    • Ready for client sharing
-                                </p>
-                            </div>
-                        </div>
-                    \`;
-                }
-            }, 2000);
+                const versionBadge = document.createElement('div');
+                versionBadge.style.cssText = \`
+                    position: fixed;
+                    bottom: 16px;
+                    right: 16px;
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    font-size: 11px;
+                    z-index: 99999;
+                    font-family: ui-monospace, monospace;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    cursor: pointer;
+                \`;
+                versionBadge.innerHTML = '🔥 Standalone v3.0';
+                versionBadge.title = 'DataLayer Builder v3.0 - Standalone Version\\nGenerated: ${new Date().toLocaleString()}\\nSize: ${Math.round((cssContent.length + jsContent.length) / 1024)}KB';
 
-            // Add version info badge
-            const versionBadge = document.createElement('div');
-            versionBadge.style.cssText = 'position:fixed;bottom:10px;right:10px;background:rgba(0,0,0,0.8);color:white;padding:8px 12px;border-radius:6px;font-size:12px;z-index:99999;font-family:monospace;';
-            versionBadge.innerHTML = '🔥 DataLayer Builder v3.0 - Standalone';
-            document.body.appendChild(versionBadge);
+                versionBadge.addEventListener('click', () => {
+                    alert('DataLayer Builder v3.0 - Standalone Version\\n\\n📊 Complete functionality included\\n💾 Generated: ${new Date().toLocaleString()}\\n📏 Size: ${Math.round((cssContent.length + jsContent.length) / 1024)}KB\\n🚀 No internet required');
+                });
 
-            // Remove version badge after 5 seconds
-            setTimeout(() => versionBadge.remove(), 5000);
+                document.body.appendChild(versionBadge);
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (versionBadge.parentNode) {
+                        versionBadge.style.opacity = '0.3';
+                    }
+                }, 5000);
+            }, 1000);
         });
-
-        // In a complete version, the full React application would be here
-        // This would include all components, routing, state management, etc.
     </script>
 </body>
 </html>`;
