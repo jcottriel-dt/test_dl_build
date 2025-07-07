@@ -1476,17 +1476,46 @@
           return;
         }
 
-        let schema = `// DataLayer Push\ndataLayer.push({\n  event: '${selectedEvent.name}'`;
+        let schema = `// DataLayer Push\n`;
+        schema += `// Event: ${selectedEvent.name}\n`;
+        schema += `// Description: ${selectedEvent.description}\n`;
+        schema += `// Category: ${selectedEvent.category}\n\n`;
 
+        schema += `dataLayer.push({\n  event: '${selectedEvent.name}'`;
+
+        // Add object blocks with proper structure
         Object.keys(objectBlocks).forEach((blockKey) => {
-          objectBlocks[blockKey].forEach((param) => {
-            const value =
-              param.type === "string" ? `'${param.example}'` : param.example;
-            schema += `,\n  ${param.name}: ${value}`;
-          });
+          if (objectBlocks[blockKey].length > 0) {
+            schema += `,\n  ${blockKey}: {`;
+            objectBlocks[blockKey].forEach((param, index) => {
+              const value =
+                param.type === "string" ? `'${param.example}'` : param.example;
+              schema += `\n    ${param.name}: ${value}`;
+              if (index < objectBlocks[blockKey].length - 1) {
+                schema += ",";
+              }
+              schema += ` // ${param.description}`;
+            });
+            schema += "\n  }";
+          }
         });
 
-        schema += "\n});";
+        schema += "\n});\n\n";
+
+        // Add parameter definitions section
+        schema += `/* Parameter Definitions:\n\n`;
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            const blockName = blockKey.replace("_", " ").toUpperCase();
+            schema += `${blockName}:\n`;
+            objectBlocks[blockKey].forEach((param) => {
+              schema += `  - ${param.name} (${param.type}): ${param.description}\n`;
+              schema += `    Example: ${param.example}\n`;
+              schema += `    Category: ${param.category}\n\n`;
+            });
+          }
+        });
+        schema += `*/`;
 
         output.textContent = schema;
       }
