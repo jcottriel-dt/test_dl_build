@@ -675,7 +675,10 @@
               }
 
               function renderEvents() {
+                  console.log('Rendering events...');
                   const container = document.getElementById('eventsList');
+                  console.log('Events container for rendering:', container);
+                  console.log('Filtered events count:', filteredEvents.length);
                   container.innerHTML = '';
 
                   filteredEvents.forEach(event => {
