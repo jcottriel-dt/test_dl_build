@@ -703,16 +703,27 @@
               }
 
               function loadParameters() {
-                  const categoriesContainer = document.getElementById('paramCategories');
+                  try {
+                      console.log('Loading parameters...');
+                      const categoriesContainer = document.getElementById('paramCategories');
 
-                  // Load category filters
-                  const categories = [...new Set(PARAMETERS.map(p => p.category))];
-                  categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterParametersByCategory(\'\')">All</div>';
-                  categories.forEach(cat => {
-                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterParametersByCategory('\${cat}')">\${cat}</div>\`;
-                  });
+                      if (!categoriesContainer) {
+                          throw new Error('paramCategories container not found');
+                      }
 
-                  renderParameters();
+                      // Load category filters
+                      const categories = [...new Set(PARAMETERS.map(p => p.category))];
+                      console.log('Parameter categories:', categories);
+                      categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterParametersByCategory(\'\')">All</div>';
+                      categories.forEach(cat => {
+                          categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterParametersByCategory('\${cat}')">\${cat}</div>\`;
+                      });
+
+                      renderParameters();
+                      console.log('Parameters loaded successfully');
+                  } catch (error) {
+                      console.error('Error loading parameters:', error);
+                  }
               }
 
               function renderParameters() {
