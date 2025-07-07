@@ -626,10 +626,16 @@
 
               // Initialize Application
               function init() {
+                  console.log('Initializing DataLayer Builder...');
+                  console.log('GA4_EVENTS length:', GA4_EVENTS.length);
+                  console.log('PARAMETERS length:', PARAMETERS.length);
+
                   loadEvents();
                   loadParameters();
                   setupEventListeners();
                   updateParameterCount();
+
+                  console.log('Initialization complete');
               }
 
               function setupEventListeners() {
