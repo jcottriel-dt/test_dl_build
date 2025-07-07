@@ -689,14 +689,10 @@
               }
 
               function loadParameters() {
-                  console.log('Loading parameters...');
                   const categoriesContainer = document.getElementById('paramCategories');
-
-                  console.log('Param categories container:', categoriesContainer);
 
                   // Load category filters
                   const categories = [...new Set(PARAMETERS.map(p => p.category))];
-                  console.log('Parameter categories:', categories);
                   categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterParametersByCategory(\'\')">All</div>';
                   categories.forEach(cat => {
                       categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterParametersByCategory('\${cat}')">\${cat}</div>\`;
