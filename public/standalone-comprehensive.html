@@ -429,6 +429,68 @@
           </div>
         </div>
 
+        <!-- Schema Preview -->
+        <div class="card">
+          <button
+            class="section-toggle"
+            onclick="toggleSection('schema-preview')"
+          >
+            <h3>👁️ Schema Preview</h3>
+            <span id="schema-preview-toggle">▼</span>
+          </button>
+          <div class="collapsible-content" id="schema-preview-content">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 0.5rem">
+                <span
+                  id="previewEventBadge"
+                  class="category-badge"
+                  style="display: none"
+                ></span>
+                <span
+                  id="previewParamCount"
+                  class="badge"
+                  style="display: none"
+                ></span>
+              </div>
+              <button
+                class="btn"
+                onclick="copySchemaPreview()"
+                id="copyPreviewBtn"
+                style="display: none"
+              >
+                📋 Copy Code
+              </button>
+            </div>
+            <div class="schema-preview" id="schemaPreview">
+              <div style="text-align: center; padding: 2rem; color: #9ca3af">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem">👁️</div>
+                <p>Select an event to preview the data layer schema</p>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 8px;
+              "
+            >
+              <p style="font-size: 0.75rem; color: #22c55e">
+                💡 This preview shows how your data layer push will look in the
+                actual implementation.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <!-- Schema Output -->
         <div class="card">
           <h3>📋 Generated Schema</h3>
