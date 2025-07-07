@@ -681,10 +681,17 @@
               }
 
               function renderEvents() {
-                  const container = document.getElementById('eventsList');
-                  container.innerHTML = '';
+                  try {
+                      console.log('Rendering events...');
+                      const container = document.getElementById('eventsList');
+                      if (!container) {
+                          throw new Error('eventsList container not found for rendering');
+                      }
 
-                  filteredEvents.forEach(event => {
+                      console.log('Filtered events count:', filteredEvents.length);
+                      container.innerHTML = '';
+
+                      filteredEvents.forEach(event => {
                       const div = document.createElement('div');
                       div.className = 'event-item';
                       if (selectedEvent && selectedEvent.name === event.name) {
