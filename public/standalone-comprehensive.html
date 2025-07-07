@@ -1,0 +1,2170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataLayer Builder v4.0 - GA4 Schema Generator</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #f8fafc;
+        min-height: 100vh;
+      }
+
+      .app-container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 320px;
+        background: rgba(255, 255, 255, 0.05);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        overflow-y: auto;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #22c55e, #16a34a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card h3 {
+        color: #22c55e;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .section-toggle {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .collapsible-content {
+        margin-top: 1rem;
+      }
+
+      .collapsed .collapsible-content {
+        display: none;
+      }
+
+      .search-box {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #f8fafc;
+        margin-bottom: 1rem;
+      }
+
+      .search-box:focus {
+        outline: none;
+        border-color: #22c55e;
+      }
+
+      .filter-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .filter-badge {
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .filter-badge.active {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+      }
+
+      .filter-badge:hover {
+        background: rgba(34, 197, 94, 0.2);
+      }
+
+      .event-item,
+      .param-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-style: dashed;
+      }
+
+      .event-item:hover,
+      .param-item:hover {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: #22c55e;
+        transform: translateY(-1px);
+      }
+
+      .event-selected {
+        background: rgba(34, 197, 94, 0.2) !important;
+        border-color: #22c55e !important;
+      }
+
+      .event-name,
+      .param-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .event-desc,
+      .param-desc {
+        font-size: 0.875rem;
+        color: #d1d5db;
+        margin-bottom: 0.25rem;
+      }
+
+      .param-example {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        font-style: italic;
+      }
+
+      .category-badge {
+        background: #374151;
+        color: #f3f4f6;
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.625rem;
+        font-weight: 500;
+      }
+
+      .badge {
+        background: #1f2937;
+        color: #f9fafb;
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.625rem;
+        font-weight: 500;
+      }
+
+      .object-block {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        min-height: 60px;
+      }
+
+      .object-block h4 {
+        color: #22c55e;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .param-in-block {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid #22c55e;
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .remove-btn {
+        background: #ef4444;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .schema-output {
+        background: #1f2937;
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: "Courier New", monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        overflow-x: auto;
+      }
+
+      .schema-preview {
+        background: #1f2937;
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: "Courier New", monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        overflow-x: auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        white-space: pre-wrap;
+      }
+
+      .syntax-keyword {
+        color: #60a5fa;
+      }
+
+      .syntax-method {
+        color: #fbbf24;
+      }
+
+      .syntax-punctuation {
+        color: #9ca3af;
+      }
+
+      .syntax-brace {
+        color: #22c55e;
+      }
+
+      .syntax-string {
+        color: #86efac;
+      }
+
+      .syntax-number {
+        color: #fb923c;
+      }
+
+      .syntax-boolean {
+        color: #a78bfa;
+      }
+
+      .syntax-array {
+        color: #06b6d4;
+      }
+
+      .syntax-property {
+        color: #7dd3fc;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .btn {
+        background: #3b82f6;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        transition: background 0.2s;
+      }
+
+      .btn:hover {
+        background: #2563eb;
+      }
+
+      .btn-secondary {
+        background: #6b7280;
+      }
+
+      .btn-secondary:hover {
+        background: #4b5563;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .selected-event {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid #22c55e;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div
+          style="
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          "
+        >
+          <h2 style="color: #22c55e; font-size: 1.1rem">
+            ✨ Schema Components
+          </h2>
+          <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.25rem">
+            Drag events and parameters to build your GA4 schema
+          </p>
+        </div>
+
+        <!-- Events Section -->
+        <div class="card">
+          <button class="section-toggle" onclick="toggleSection('events')">
+            <h3>⚡ GA4 Events</h3>
+            <span id="events-toggle">▼</span>
+          </button>
+          <div class="collapsible-content" id="events-content">
+            <input
+              type="text"
+              placeholder="Search events..."
+              class="search-box"
+              id="eventSearch"
+              oninput="filterEvents(this.value)"
+            />
+            <div class="filter-badges" id="eventCategories"></div>
+            <div
+              id="eventsList"
+              style="max-height: 300px; overflow-y: auto"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Parameters Section -->
+        <div class="card">
+          <button class="section-toggle" onclick="toggleSection('parameters')">
+            <h3>🏥 Parameters</h3>
+            <span id="parameters-toggle">▼</span>
+          </button>
+          <div class="collapsible-content" id="parameters-content">
+            <input
+              type="text"
+              placeholder="Search parameters..."
+              class="search-box"
+              id="paramSearch"
+              oninput="filterParameters(this.value)"
+            />
+            <div class="filter-badges" id="paramCategories"></div>
+            <div
+              id="parametersList"
+              style="max-height: 400px; overflow-y: auto"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <header class="header">
+          <h1 class="title">DataLayer Builder v4.0</h1>
+          <p style="opacity: 0.8; margin-top: 0.5rem">
+            Healthcare & Pharmaceutical GA4 Schema Generator - Complete
+            Standalone Version
+          </p>
+          <p
+            style="font-size: 0.9rem; opacity: 0.7; margin-top: 1rem"
+            id="generatedDate"
+          >
+            Generated: Loading... | 74+ Parameters | 35+ Events | Full
+            Functionality
+          </p>
+        </header>
+
+        <!-- Selected Event Display -->
+        <div class="selected-event">
+          <h3 style="color: #22c55e; margin-bottom: 0.5rem">Selected Event</h3>
+          <p>Event: <strong id="selectedEventName">None</strong></p>
+          <p style="font-size: 0.875rem; margin-top: 0.5rem">
+            Parameter Count: <span id="parameterCount">0</span>
+          </p>
+        </div>
+
+        <!-- Object Blocks -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+          "
+        >
+          <div
+            class="object-block"
+            data-block="user_data"
+            ondragover="handleDragOver(event)"
+            ondrop="handleDrop(event)"
+          >
+            <h4>👤 User Data</h4>
+            <div id="user_data_list"></div>
+          </div>
+          <div
+            class="object-block"
+            data-block="page_data"
+            ondragover="handleDragOver(event)"
+            ondrop="handleDrop(event)"
+          >
+            <h4>📄 Page Data</h4>
+            <div id="page_data_list"></div>
+          </div>
+          <div
+            class="object-block"
+            data-block="page_data_temp"
+            ondragover="handleDragOver(event)"
+            ondrop="handleDrop(event)"
+          >
+            <h4>🔄 Page Data Temp</h4>
+            <div id="page_data_temp_list"></div>
+          </div>
+          <div
+            class="object-block"
+            data-block="event_data"
+            ondragover="handleDragOver(event)"
+            ondrop="handleDrop(event)"
+          >
+            <h4>⚡ Event Data</h4>
+            <div id="event_data_list"></div>
+          </div>
+        </div>
+
+        <!-- Schema Preview -->
+        <div class="card">
+          <button
+            class="section-toggle"
+            onclick="toggleSection('schema-preview')"
+          >
+            <h3>👁️ Schema Preview</h3>
+            <span id="schema-preview-toggle">▼</span>
+          </button>
+          <div class="collapsible-content" id="schema-preview-content">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 0.5rem">
+                <span
+                  id="previewEventBadge"
+                  class="category-badge"
+                  style="display: none"
+                ></span>
+                <span
+                  id="previewParamCount"
+                  class="badge"
+                  style="display: none"
+                ></span>
+              </div>
+              <button
+                class="btn"
+                onclick="copySchemaPreview()"
+                id="copyPreviewBtn"
+                style="display: none"
+              >
+                📋 Copy Code
+              </button>
+            </div>
+            <div class="schema-preview" id="schemaPreview">
+              <div style="text-align: center; padding: 2rem; color: #9ca3af">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem">👁️</div>
+                <p>Select an event to preview the data layer schema</p>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 8px;
+              "
+            >
+              <p style="font-size: 0.75rem; color: #22c55e">
+                💡 This preview shows how your data layer push will look in the
+                actual implementation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schema Output -->
+        <div class="card">
+          <h3>📋 Generated Schema</h3>
+          <div class="schema-output" id="schemaOutput">
+            // Select an event and add parameters to generate schema code
+          </div>
+          <div class="action-buttons">
+            <button class="btn" onclick="copyToClipboard()">📋 Copy</button>
+            <button class="btn btn-secondary" onclick="downloadMarkdown()">
+              📄 Download MD
+            </button>
+            <button class="btn btn-danger" onclick="clearAll()">
+              🗑️ Clear All
+            </button>
+            <button class="btn btn-secondary" onclick="resetSchema()">
+              🔄 Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Complete GA4 Events Database
+      const GA4_EVENTS = [
+        // Core Navigation & Page Events
+        {
+          name: "page_view",
+          category: "page",
+          description:
+            "Automatically triggered when a user views a page or screen. The foundational event for tracking site/app usage.",
+          example: "Homepage visit, product detail page view",
+        },
+
+        // User Engagement & Interaction
+        {
+          name: "click",
+          category: "engagement",
+          description:
+            "Triggered when user clicks on tracked elements like buttons, links, or CTAs. Essential for interaction analysis.",
+          example:
+            "Header navigation click, CTA button click, external link click",
+        },
+        {
+          name: "scroll",
+          category: "engagement",
+          description:
+            "Triggered when user scrolls to specific page depths (25%, 50%, 75%, 100%). Measures content engagement.",
+          example:
+            "User scrolls to 75% of article, reaches bottom of product page",
+        },
+        {
+          name: "file_download",
+          category: "engagement",
+          description:
+            "Triggered when user downloads files like PDFs, documents, or media. Tracks content consumption.",
+          example:
+            "PDF brochure download, product catalog download, whitepaper download",
+        },
+        {
+          name: "select_content",
+          category: "engagement",
+          description:
+            "Triggered when user selects specific content or navigates to content sections. Tracks content preferences.",
+          example:
+            "Selecting blog post, choosing product category, picking video",
+        },
+
+        // Search & Discovery
+        {
+          name: "search",
+          category: "search",
+          description:
+            "Triggered when user performs a search query. Essential for understanding user intent and content gaps.",
+          example:
+            "Site search for 'diabetes medication', product search for 'blood pressure monitor'",
+        },
+        {
+          name: "view_search_results",
+          category: "search",
+          description:
+            "Triggered when search results are displayed to user. Tracks search effectiveness and result relevance.",
+          example:
+            "Drug search returns 15 results, product search shows filtered results",
+        },
+        {
+          name: "select_item",
+          category: "search",
+          description:
+            "Triggered when user selects an item from search results or lists. Measures search success and item appeal.",
+          example:
+            "Clicking on search result, selecting from dropdown suggestions",
+        },
+
+        // Forms & Lead Generation
+        {
+          name: "form_start",
+          category: "form",
+          description:
+            "Triggered when user begins filling out a form. Critical for conversion funnel analysis and form optimization.",
+          example:
+            "Starting contact form, beginning signup process, starting patient enrollment",
+        },
+        {
+          name: "form_submit",
+          category: "form",
+          description:
+            "Triggered when user successfully submits a form. Key conversion event for lead generation and completion tracking.",
+          example:
+            "Contact form submission, newsletter signup, patient information form completion",
+        },
+        {
+          name: "generate_lead",
+          category: "conversion",
+          description:
+            "Triggered when user action generates a qualified lead. High-value conversion event for business tracking.",
+          example:
+            "Requesting consultation, downloading gated content, requesting drug samples",
+        },
+
+        // User Account & Authentication
+        {
+          name: "login",
+          category: "user",
+          description:
+            "Triggered when user successfully logs into their account. Tracks user engagement and retention.",
+          example: "Healthcare provider portal login, patient account access",
+        },
+        {
+          name: "sign_up",
+          category: "user",
+          description:
+            "Triggered when user creates a new account. Critical conversion event for user acquisition tracking.",
+          example:
+            "Healthcare provider registration, patient portal signup, newsletter subscription",
+        },
+        {
+          name: "join_group",
+          category: "user",
+          description:
+            "Triggered when user joins a group, program, or community. Tracks program enrollment and community engagement.",
+          example:
+            "Joining patient support group, enrolling in savings program, subscribing to specialty updates",
+        },
+
+        // E-commerce & Shopping
+        {
+          name: "view_item",
+          category: "ecommerce",
+          description:
+            "Triggered when user views a product or item detail page. Fundamental for product performance analysis.",
+          example:
+            "Viewing medication details, examining medical device specifications",
+        },
+        {
+          name: "view_item_list",
+          category: "ecommerce",
+          description:
+            "Triggered when user views a list of products or items. Tracks browsing behavior and category performance.",
+          example:
+            "Viewing search results, browsing product category, seeing related items",
+        },
+        {
+          name: "add_to_cart",
+          category: "ecommerce",
+          description:
+            "Triggered when user adds items to shopping cart. Key pre-purchase conversion indicator.",
+          example:
+            "Adding prescription to cart, selecting medical supplies, choosing insurance plan",
+        },
+        {
+          name: "remove_from_cart",
+          category: "ecommerce",
+          description:
+            "Triggered when user removes items from cart. Important for cart abandonment analysis and pricing optimization.",
+          example:
+            "Removing expensive medication, changing insurance selection",
+        },
+        {
+          name: "view_cart",
+          category: "ecommerce",
+          description:
+            "Triggered when user views their shopping cart contents. Tracks purchase intent and cart engagement.",
+          example:
+            "Reviewing selected medications, checking total costs, viewing insurance coverage",
+        },
+        {
+          name: "add_to_wishlist",
+          category: "ecommerce",
+          description:
+            "Triggered when user saves items for later purchase. Tracks product interest and future purchase intent.",
+          example:
+            "Saving medication for future reference, bookmarking medical device",
+        },
+        {
+          name: "begin_checkout",
+          category: "ecommerce",
+          description:
+            "Triggered when user starts the checkout process. Critical conversion funnel event for purchase analysis.",
+          example:
+            "Starting prescription order, beginning insurance enrollment, initiating payment process",
+        },
+        {
+          name: "add_payment_info",
+          category: "ecommerce",
+          description:
+            "Triggered when user adds payment information during checkout. Late-stage conversion indicator.",
+          example:
+            "Adding credit card details, selecting insurance payment method, entering bank information",
+        },
+        {
+          name: "add_shipping_info",
+          category: "ecommerce",
+          description:
+            "Triggered when user adds shipping/delivery information. Important step in fulfillment process tracking.",
+          example:
+            "Adding home delivery address, selecting pharmacy pickup location, choosing shipping method",
+        },
+        {
+          name: "purchase",
+          category: "ecommerce",
+          description:
+            "Triggered when user completes a purchase transaction. The ultimate conversion event for revenue tracking.",
+          example:
+            "Prescription purchase completion, insurance plan enrollment, medical device order",
+        },
+        {
+          name: "refund",
+          category: "ecommerce",
+          description:
+            "Triggered when a purchase refund is processed. Important for financial reconciliation and customer satisfaction.",
+          example:
+            "Medication return refund, insurance plan cancellation refund, service fee reversal",
+        },
+
+        // Promotions & Marketing
+        {
+          name: "view_promotion",
+          category: "marketing",
+          description:
+            "Triggered when user views a promotional offer or advertisement. Tracks marketing campaign effectiveness.",
+          example:
+            "Viewing drug discount offer, seeing savings program banner, promotional popup display",
+        },
+        {
+          name: "select_promotion",
+          category: "marketing",
+          description:
+            "Triggered when user interacts with promotional content. Measures promotion engagement and conversion potential.",
+          example:
+            "Clicking savings program CTA, selecting discount offer, choosing promotional plan",
+        },
+        {
+          name: "ad_impression",
+          category: "marketing",
+          description:
+            "Triggered when an advertisement is displayed to user. Fundamental for ad campaign measurement and reach analysis.",
+          example:
+            "Drug advertisement display, banner ad impression, sponsored content view",
+        },
+
+        // Content & Media
+        {
+          name: "view_content",
+          category: "content",
+          description:
+            "Triggered when user views specific content pieces. Tracks content performance and user interests.",
+          example:
+            "Reading drug information article, viewing patient education video, accessing treatment guidelines",
+        },
+        {
+          name: "share",
+          category: "content",
+          description:
+            "Triggered when user shares content via social media or other channels. Measures content virality and engagement.",
+          example:
+            "Sharing health article on Facebook, emailing drug information, forwarding patient resources",
+        },
+
+        // Educational & Onboarding
+        {
+          name: "tutorial_begin",
+          category: "education",
+          description:
+            "Triggered when user starts a tutorial or educational sequence. Important for user onboarding and education tracking.",
+          example:
+            "Starting medication instruction tutorial, beginning insurance navigation guide, starting health assessment",
+        },
+        {
+          name: "tutorial_complete",
+          category: "education",
+          description:
+            "Triggered when user completes a tutorial or educational program. Measures educational effectiveness and completion rates.",
+          example:
+            "Completing injection training, finishing insurance enrollment tutorial, passing medication quiz",
+        },
+
+        // Technical & System Events
+        {
+          name: "error",
+          category: "technical",
+          description:
+            "Triggered when system errors occur or user encounters technical issues. Critical for site reliability and UX monitoring.",
+          example:
+            "Form submission error, payment processing failure, page load timeout, API connection error",
+        },
+        {
+          name: "set_data",
+          category: "technical",
+          description:
+            "Triggered when data is set or updated in the system. Used for data management and system state tracking.",
+          example:
+            "User preference update, profile information change, system configuration update",
+        },
+
+        // Legacy Events (Maintained for compatibility)
+        {
+          name: "video_start",
+          category: "media",
+          description:
+            "Triggered when user starts playing a video. Essential for video content engagement analysis.",
+          example:
+            "Starting patient education video, playing drug mechanism animation, beginning webinar",
+        },
+        {
+          name: "video_progress",
+          category: "media",
+          description:
+            "Triggered at video progress milestones (25%, 50%, 75%, 100%). Tracks video engagement depth.",
+          example:
+            "Reaching 50% of educational video, completing 75% of treatment explanation",
+        },
+        {
+          name: "video_complete",
+          category: "media",
+          description:
+            "Triggered when user completes watching a video. Measures full content consumption and engagement quality.",
+          example:
+            "Finishing medication instruction video, completing patient testimonial, watching full webinar",
+        },
+        {
+          name: "custom_event",
+          category: "custom",
+          description:
+            "Custom-defined event for specific business requirements. Flexible event for unique tracking needs.",
+          example:
+            "Drug interaction check, dosage calculator use, appointment scheduling, specialty program enrollment",
+        },
+      ];
+
+      // Complete Healthcare Parameters Database
+      const PARAMETERS = [
+        // Healthcare/Pharmaceutical - Drug Information
+        {
+          name: "drug_name",
+          type: "string",
+          category: "drug",
+          description: "Generic or full name of the pharmaceutical drug",
+          example: "Metformin Hydrochloride",
+        },
+        {
+          name: "drug_brand",
+          type: "string",
+          category: "drug",
+          description: "Brand name of the drug",
+          example: "Lipitor",
+        },
+        {
+          name: "drug_type",
+          type: "string",
+          category: "drug",
+          description: "Classification type of the drug",
+          example: "prescription",
+        },
+        {
+          name: "drug_classes",
+          type: "array",
+          category: "drug",
+          description: "Array of drug classification categories",
+          example: '["ACE Inhibitor", "Cardiovascular"]',
+        },
+        {
+          name: "drug_speciality",
+          type: "string",
+          category: "drug",
+          description: "Medical specialty associated with drug",
+          example: "cardiology",
+        },
+        {
+          name: "drug_specialties",
+          type: "array",
+          category: "drug",
+          description: "Multiple medical specialties for the drug",
+          example: '["cardiology", "internal_medicine"]',
+        },
+        {
+          name: "drug_specialty",
+          type: "string",
+          category: "drug",
+          description: "Primary medical specialty for drug",
+          example: "oncology",
+        },
+        {
+          name: "dosage",
+          type: "string",
+          category: "drug",
+          description: "Dosage amount and unit for the drug",
+          example: "10mg",
+        },
+        {
+          name: "indication",
+          type: "string",
+          category: "drug",
+          description: "Primary medical indication for drug use",
+          example: "hypertension",
+        },
+        {
+          name: "indications",
+          type: "array",
+          category: "drug",
+          description: "Array of medical indications for drug use",
+          example: '["diabetes", "weight_management"]',
+        },
+        {
+          name: "enhanced_drug",
+          type: "boolean",
+          category: "drug",
+          description: "Whether drug has enhanced features or information",
+          example: "true",
+        },
+        {
+          name: "qty",
+          type: "number",
+          category: "drug",
+          description: "Quantity of drug units",
+          example: "30",
+        },
+
+        // Healthcare Provider Information
+        {
+          name: "healthcare_provider_id",
+          type: "string",
+          category: "hcp",
+          description: "Unique identifier for healthcare provider",
+          example: "hcp_12345",
+        },
+        {
+          name: "hcp_status",
+          type: "string",
+          category: "hcp",
+          description: "Status or verification level of healthcare provider",
+          example: "verified",
+        },
+        {
+          name: "alreadyHadNPI",
+          type: "boolean",
+          category: "hcp",
+          description: "Whether healthcare provider already has NPI number",
+          example: "true",
+        },
+        {
+          name: "npiNetNew",
+          type: "boolean",
+          category: "hcp",
+          description: "Whether this is a new NPI registration",
+          example: "false",
+        },
+
+        // Insurance & Coverage
+        {
+          name: "insurance_name",
+          type: "string",
+          category: "insurance",
+          description: "Name of the insurance provider",
+          example: "Blue Cross Blue Shield",
+        },
+        {
+          name: "insurance_state",
+          type: "string",
+          category: "insurance",
+          description: "State where insurance coverage applies",
+          example: "CA",
+        },
+        {
+          name: "payer",
+          type: "string",
+          category: "insurance",
+          description: "Insurance payer organization",
+          example: "Aetna",
+        },
+        {
+          name: "mco",
+          type: "string",
+          category: "insurance",
+          description: "Managed Care Organization identifier",
+          example: "Kaiser Permanente",
+        },
+        {
+          name: "mcoQuery",
+          type: "string",
+          category: "insurance",
+          description: "Query term used to search for MCO",
+          example: "kaiser",
+        },
+        {
+          name: "planType",
+          type: "string",
+          category: "insurance",
+          description: "Type of insurance plan",
+          example: "HMO",
+        },
+        {
+          name: "coverageRestrictions",
+          type: "array",
+          category: "insurance",
+          description: "Array of coverage restrictions or limitations",
+          example: '["prior_auth_required", "step_therapy"]',
+        },
+        {
+          name: "pa_approved",
+          type: "boolean",
+          category: "insurance",
+          description: "Whether prior authorization is approved",
+          example: "true",
+        },
+        {
+          name: "stepTherapies",
+          type: "array",
+          category: "insurance",
+          description: "Required step therapy medications",
+          example: '["metformin", "sulfonylurea"]',
+        },
+        {
+          name: "tier",
+          type: "number",
+          category: "insurance",
+          description: "Formulary tier level of the drug",
+          example: "2",
+        },
+
+        // User & Session Information
+        {
+          name: "user_already_exists",
+          type: "boolean",
+          category: "user",
+          description: "Whether user account already exists",
+          example: "false",
+        },
+        {
+          name: "user_key",
+          type: "string",
+          category: "user",
+          description: "Unique user identification key",
+          example: "usr_abc123",
+        },
+        {
+          name: "user_role",
+          type: "string",
+          category: "user",
+          description: "Role or type of user in the system",
+          example: "healthcare_provider",
+        },
+        {
+          name: "aim_session_id",
+          type: "string",
+          category: "user",
+          description: "Session identifier for analytics tracking",
+          example: "sess_xyz789",
+        },
+
+        // Employer & Professional Information
+        {
+          name: "employerName",
+          type: "string",
+          category: "professional",
+          description: "Name of the healthcare provider's employer",
+          example: "Mayo Clinic",
+        },
+        {
+          name: "employerQuery",
+          type: "string",
+          category: "professional",
+          description: "Search query used to find employer",
+          example: "mayo clinic minnesota",
+        },
+
+        // Interaction & Engagement
+        {
+          name: "action",
+          type: "string",
+          category: "interaction",
+          description: "Specific action taken by user",
+          example: "drug_search",
+        },
+        {
+          name: "button_text",
+          type: "string",
+          category: "interaction",
+          description: "Text content of clicked button",
+          example: "Find Coverage Options",
+        },
+        {
+          name: "cta_button_name",
+          type: "string",
+          category: "interaction",
+          description: "Name identifier of call-to-action button",
+          example: "request_samples",
+        },
+        {
+          name: "cta_type",
+          type: "string",
+          category: "interaction",
+          description: "Type of call-to-action interaction",
+          example: "primary_cta",
+        },
+        {
+          name: "link_text",
+          type: "string",
+          category: "interaction",
+          description: "Text content of clicked link",
+          example: "Learn More About Side Effects",
+        },
+        {
+          name: "link_url",
+          type: "string",
+          category: "interaction",
+          description: "URL destination of clicked link",
+          example: "https://example.com/drug-info",
+        },
+        {
+          name: "drop_down_text",
+          type: "string",
+          category: "interaction",
+          description: "Selected text from dropdown menu",
+          example: "Cardiology",
+        },
+        {
+          name: "clipboard_text",
+          type: "string",
+          category: "interaction",
+          description: "Text copied to clipboard",
+          example: "Drug Name: Lipitor 20mg",
+        },
+        {
+          name: "has_interaction",
+          type: "boolean",
+          category: "interaction",
+          description: "Whether user had any interaction on page",
+          example: "true",
+        },
+        {
+          name: "scroll_depth",
+          type: "number",
+          category: "interaction",
+          description: "Percentage of page scrolled by user",
+          example: "75",
+        },
+
+        // Content & Resources
+        {
+          name: "resource_name",
+          type: "string",
+          category: "content",
+          description: "Name of the accessed resource",
+          example: "Patient Education Brochure",
+        },
+        {
+          name: "resource_parent",
+          type: "string",
+          category: "content",
+          description: "Parent category of the resource",
+          example: "Educational Materials",
+        },
+        {
+          name: "resource_parent_section",
+          type: "string",
+          category: "content",
+          description: "Parent section containing the resource",
+          example: "Patient Resources",
+        },
+        {
+          name: "resource_section",
+          type: "string",
+          category: "content",
+          description: "Specific section of the resource",
+          example: "Side Effects",
+        },
+        {
+          name: "pdf_link",
+          type: "string",
+          category: "content",
+          description: "URL link to PDF document",
+          example: "https://example.com/drug-guide.pdf",
+        },
+
+        // Search & Discovery
+        {
+          name: "search_term",
+          type: "string",
+          category: "search",
+          description: "Search query entered by user",
+          example: "blood pressure medication",
+        },
+        {
+          name: "resultsCount",
+          type: "number",
+          category: "search",
+          description: "Number of search results returned",
+          example: "42",
+        },
+        {
+          name: "check_drugs",
+          type: "boolean",
+          category: "search",
+          description: "Whether user checked drug interactions",
+          example: "true",
+        },
+
+        // Form & Application Data
+        {
+          name: "question_1",
+          type: "string",
+          category: "form",
+          description: "Answer to first form question",
+          example: "Yes, I have diabetes",
+        },
+        {
+          name: "question_2",
+          type: "string",
+          category: "form",
+          description: "Answer to second form question",
+          example: "Type 2 diabetes",
+        },
+        {
+          name: "application_link",
+          type: "string",
+          category: "form",
+          description: "Link to application or enrollment form",
+          example: "https://example.com/apply",
+        },
+
+        // Program & Treatment Information
+        {
+          name: "program_name",
+          type: "string",
+          category: "program",
+          description: "Name of patient assistance or treatment program",
+          example: "Patient Savings Program",
+        },
+        {
+          name: "treatment",
+          type: "string",
+          category: "program",
+          description: "Treatment or therapy being discussed",
+          example: "insulin_therapy",
+        },
+        {
+          name: "pharma_company",
+          type: "string",
+          category: "program",
+          description: "Pharmaceutical company name",
+          example: "Pfizer Inc.",
+        },
+
+        // Testing & Experimentation
+        {
+          name: "experiment_name",
+          type: "string",
+          category: "testing",
+          description: "Name of A/B test or experiment",
+          example: "homepage_redesign_v2",
+        },
+        {
+          name: "experiment_treatment",
+          type: "string",
+          category: "testing",
+          description: "Treatment group in A/B test",
+          example: "variant_b",
+        },
+
+        // Technical & System
+        {
+          name: "artificial_gclid",
+          type: "string",
+          category: "technical",
+          description: "Artificially generated Google Click ID",
+          example: "art_gclid_123456",
+        },
+        {
+          name: "email_domain",
+          type: "string",
+          category: "technical",
+          description: "Domain of user's email address",
+          example: "gmail.com",
+        },
+        {
+          name: "phone_number",
+          type: "string",
+          category: "technical",
+          description: "User's phone number (hashed for privacy)",
+          example: "+1-555-0123",
+        },
+        {
+          name: "url_fragment",
+          type: "string",
+          category: "technical",
+          description: "Fragment identifier in URL",
+          example: "#section-dosage",
+        },
+
+        // Business & Commerce
+        {
+          name: "cards_amount",
+          type: "number",
+          category: "commerce",
+          description: "Number of cards or items in collection",
+          example: "3",
+        },
+        {
+          name: "product_id",
+          type: "string",
+          category: "commerce",
+          description: "Unique product identifier",
+          example: "prod_drug_001",
+        },
+        {
+          name: "transaction_id",
+          type: "string",
+          category: "commerce",
+          description: "Unique transaction identifier",
+          example: "txn_abc123",
+        },
+        {
+          name: "currency",
+          type: "string",
+          category: "commerce",
+          description: "Currency code for monetary values",
+          example: "USD",
+        },
+        {
+          name: "value",
+          type: "number",
+          category: "commerce",
+          description: "Monetary value of transaction or event",
+          example: "25.99",
+        },
+
+        // Communication & Support
+        {
+          name: "case_id",
+          type: "string",
+          category: "support",
+          description: "Support case or ticket identifier",
+          example: "case_98765",
+        },
+        {
+          name: "chat_id",
+          type: "string",
+          category: "support",
+          description: "Chat session identifier",
+          example: "chat_session_456",
+        },
+        {
+          name: "channel",
+          type: "string",
+          category: "support",
+          description: "Communication channel used",
+          example: "live_chat",
+        },
+
+        // Navigation & Structure
+        {
+          name: "page",
+          type: "string",
+          category: "page",
+          description: "Current page identifier",
+          example: "drug_detail",
+        },
+        {
+          name: "page_section",
+          type: "string",
+          category: "page",
+          description: "Section of the current page",
+          example: "dosage_information",
+        },
+        {
+          name: "slug",
+          type: "string",
+          category: "page",
+          description: "URL slug identifier for the page",
+          example: "lipitor-atorvastatin",
+        },
+        {
+          name: "id",
+          type: "string",
+          category: "page",
+          description: "Generic identifier for page or element",
+          example: "element_123",
+        },
+        {
+          name: "label",
+          type: "string",
+          category: "page",
+          description: "Label or title for UI element",
+          example: "Dosage Calculator",
+        },
+        {
+          name: "order",
+          type: "number",
+          category: "page",
+          description: "Order or sequence number",
+          example: "1",
+        },
+        {
+          name: "set_id",
+          type: "string",
+          category: "page",
+          description: "Identifier for a set or group of items",
+          example: "drug_set_cardio",
+        },
+        {
+          name: "method",
+          type: "string",
+          category: "page",
+          description: "Method or approach used",
+          example: "api_lookup",
+        },
+
+        // List & Item Management
+        {
+          name: "item_list_id",
+          type: "string",
+          category: "list",
+          description: "Identifier for item list",
+          example: "search_results_drugs",
+        },
+        {
+          name: "item_list_name",
+          type: "string",
+          category: "list",
+          description: "Name of the item list",
+          example: "Drug Search Results",
+        },
+        {
+          name: "items",
+          type: "array",
+          category: "list",
+          description: "Array of items in the list",
+          example: '[{"name": "Lipitor", "id": "drug_001"}]',
+        },
+
+        // Standard GA4 Event Parameters
+        {
+          name: "event_action",
+          type: "string",
+          category: "event",
+          description: "Specific action that triggered the event",
+          example: "drug_lookup",
+        },
+        {
+          name: "event_category",
+          type: "string",
+          category: "event",
+          description: "Category classification for the event",
+          example: "drug_interaction",
+        },
+        {
+          name: "event_label",
+          type: "string",
+          category: "event",
+          description: "Additional label for event context",
+          example: "dosage_calculator",
+        },
+
+        // Page Data
+        {
+          name: "page_name",
+          type: "string",
+          category: "page",
+          description: "The name of the page",
+          example: "Homepage",
+        },
+        {
+          name: "page_location",
+          type: "string",
+          category: "page",
+          description: "The URL of the page",
+          example: "https://example.com/page",
+        },
+        {
+          name: "page_path",
+          type: "string",
+          category: "page",
+          description: "The path portion of the URL",
+          example: "/products/shoes",
+        },
+        {
+          name: "page_query_string",
+          type: "string",
+          category: "page",
+          description: "The query string of the URL",
+          example: "?utm_source=google",
+        },
+        {
+          name: "page_type",
+          type: "string",
+          category: "page",
+          description: "The type of page",
+          example: "product_detail",
+        },
+        {
+          name: "page_title",
+          type: "string",
+          category: "page",
+          description: "The title of the page",
+          example: "Product Name - Company",
+        },
+        {
+          name: "page_referrer",
+          type: "string",
+          category: "page",
+          description: "The referring page URL",
+          example: "https://google.com",
+        },
+      ];
+
+      // Application State
+      let selectedEvent = null;
+      let objectBlocks = {
+        user_data: [],
+        page_data: [],
+        page_data_temp: [],
+        event_data: [],
+      };
+      let filteredEvents = [...GA4_EVENTS];
+      let filteredParameters = [...PARAMETERS];
+
+      // Initialize Application
+      function init() {
+        console.log("Initializing DataLayer Builder...");
+
+        // Set generated date
+        document.getElementById("generatedDate").textContent =
+          "Generated: " +
+          new Date().toLocaleString() +
+          " | 74+ Parameters | 35+ Events | Full Functionality";
+
+        loadEvents();
+        loadParameters();
+        updateParameterCount();
+        generateSchema();
+
+        console.log("DataLayer Builder initialized successfully!");
+      }
+
+      function loadEvents() {
+        console.log("Loading events...");
+        const categoriesContainer = document.getElementById("eventCategories");
+
+        // Load category filters
+        const categories = [...new Set(GA4_EVENTS.map((e) => e.category))];
+        console.log("Event categories:", categories);
+
+        categoriesContainer.innerHTML =
+          '<div class="filter-badge active" onclick="filterEventsByCategory(\'\')">All</div>';
+        categories.forEach((cat) => {
+          categoriesContainer.innerHTML += `<div class="filter-badge" onclick="filterEventsByCategory('${cat}')">${cat}</div>`;
+        });
+
+        renderEvents();
+        console.log("Events loaded successfully");
+      }
+
+      function renderEvents() {
+        console.log("Rendering events...");
+        const container = document.getElementById("eventsList");
+        console.log("Filtered events count:", filteredEvents.length);
+
+        container.innerHTML = "";
+
+        filteredEvents.forEach((event) => {
+          const div = document.createElement("div");
+          div.className = "event-item";
+          if (selectedEvent && selectedEvent.name === event.name) {
+            div.classList.add("event-selected");
+          }
+          div.draggable = true;
+          div.onclick = () => selectEvent(event);
+          div.ondragstart = (e) => handleEventDragStart(e, event);
+          div.innerHTML = `
+                    <div class="event-name">${event.name}<span class="category-badge">${event.category}</span></div>
+                    <div class="event-desc">${event.description}</div>
+                    <div class="param-example">Example: ${event.example}</div>
+                `;
+          container.appendChild(div);
+        });
+
+        console.log("Events rendered successfully");
+      }
+
+      function loadParameters() {
+        console.log("Loading parameters...");
+        const categoriesContainer = document.getElementById("paramCategories");
+
+        // Load category filters
+        const categories = [...new Set(PARAMETERS.map((p) => p.category))];
+        console.log("Parameter categories:", categories);
+
+        categoriesContainer.innerHTML =
+          '<div class="filter-badge active" onclick="filterParametersByCategory(\'\')">All</div>';
+        categories.forEach((cat) => {
+          categoriesContainer.innerHTML += `<div class="filter-badge" onclick="filterParametersByCategory('${cat}')">${cat}</div>`;
+        });
+
+        renderParameters();
+        console.log("Parameters loaded successfully");
+      }
+
+      function renderParameters() {
+        console.log("Rendering parameters...");
+        const container = document.getElementById("parametersList");
+        console.log("Filtered parameters count:", filteredParameters.length);
+
+        container.innerHTML = "";
+
+        filteredParameters.forEach((param) => {
+          const div = document.createElement("div");
+          div.className = "param-item";
+          div.draggable = true;
+          div.onclick = () => addParameterToBlock(param, "event_data");
+          div.ondragstart = (e) => handleParameterDragStart(e, param);
+          div.innerHTML = `
+                    <div class="param-name">${param.name}<span class="badge">${param.type}</span><span class="category-badge">${param.category}</span></div>
+                    <div class="param-desc">${param.description}</div>
+                    <div class="param-example">Example: ${param.example}</div>
+                `;
+          container.appendChild(div);
+        });
+
+        console.log("Parameters rendered successfully");
+      }
+
+      function selectEvent(event) {
+        selectedEvent = event;
+        document.getElementById("selectedEventName").textContent = event.name;
+        renderEvents(); // Re-render to show selection
+        generateSchema();
+      }
+
+      function addParameterToBlock(param, blockKey) {
+        if (!objectBlocks[blockKey].find((p) => p.name === param.name)) {
+          objectBlocks[blockKey].push(param);
+          updateObjectBlock(blockKey);
+          updateParameterCount();
+          generateSchema();
+        }
+      }
+
+      function removeParameterFromBlock(paramName, blockKey) {
+        objectBlocks[blockKey] = objectBlocks[blockKey].filter(
+          (p) => p.name !== paramName,
+        );
+        updateObjectBlock(blockKey);
+        updateParameterCount();
+        generateSchema();
+      }
+
+      function updateObjectBlock(blockKey) {
+        const container = document.getElementById(blockKey + "_list");
+        container.innerHTML = "";
+
+        objectBlocks[blockKey].forEach((param) => {
+          const div = document.createElement("div");
+          div.className = "param-in-block";
+          div.onclick = () => removeParameterFromBlock(param.name, blockKey);
+          div.innerHTML = `${param.name} <span class="badge">${param.type}</span>`;
+          container.appendChild(div);
+        });
+      }
+
+      function updateParameterCount() {
+        const total = Object.values(objectBlocks).reduce(
+          (sum, block) => sum + block.length,
+          0,
+        );
+        document.getElementById("parameterCount").textContent = total;
+      }
+
+      function generateSchema() {
+        const output = document.getElementById("schemaOutput");
+
+        if (!selectedEvent) {
+          output.textContent =
+            "// Select an event and add parameters to generate schema code";
+          return;
+        }
+
+        let schema = `// DataLayer Push\n`;
+        schema += `// Event: ${selectedEvent.name}\n`;
+        schema += `// Description: ${selectedEvent.description}\n`;
+        schema += `// Category: ${selectedEvent.category}\n\n`;
+
+        schema += `dataLayer.push({\n  event: '${selectedEvent.name}'`;
+
+        // Add object blocks with proper structure
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            schema += `,\n  ${blockKey}: {`;
+            objectBlocks[blockKey].forEach((param, index) => {
+              const value =
+                param.type === "string" ? `'${param.example}'` : param.example;
+              schema += `\n    ${param.name}: ${value}`;
+              if (index < objectBlocks[blockKey].length - 1) {
+                schema += ",";
+              }
+              schema += ` // ${param.description}`;
+            });
+            schema += "\n  }";
+          }
+        });
+
+        schema += "\n});\n\n";
+
+        // Add parameter definitions section
+        schema += `/* Parameter Definitions:\n\n`;
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            const blockName = blockKey.replace("_", " ").toUpperCase();
+            schema += `${blockName}:\n`;
+            objectBlocks[blockKey].forEach((param) => {
+              schema += `  - ${param.name} (${param.type}): ${param.description}\n`;
+              schema += `    Example: ${param.example}\n`;
+              schema += `    Category: ${param.category}\n\n`;
+            });
+          }
+        });
+        schema += `*/`;
+
+        output.textContent = schema;
+
+        // Also update the schema preview
+        generateSchemaPreview();
+      }
+
+      function generateSchemaPreview() {
+        const preview = document.getElementById("schemaPreview");
+        const eventBadge = document.getElementById("previewEventBadge");
+        const paramCount = document.getElementById("previewParamCount");
+        const copyBtn = document.getElementById("copyPreviewBtn");
+
+        if (!selectedEvent) {
+          preview.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #9ca3af;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👁️</div>
+                        <p>Select an event to preview the data layer schema</p>
+                    </div>
+                `;
+          eventBadge.style.display = "none";
+          paramCount.style.display = "none";
+          copyBtn.style.display = "none";
+          return;
+        }
+
+        // Create schema object
+        const schemaObj = { event: selectedEvent.name };
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            schemaObj[blockKey] = {};
+            objectBlocks[blockKey].forEach((param) => {
+              schemaObj[blockKey][param.name] = getExampleValue(param);
+            });
+          }
+        });
+
+        // Update badges
+        const totalParams = Object.values(objectBlocks).reduce(
+          (sum, params) => sum + params.length,
+          0,
+        );
+        eventBadge.textContent = selectedEvent.name;
+        eventBadge.style.display = "inline-block";
+        paramCount.textContent = `${totalParams} parameter${totalParams !== 1 ? "s" : ""}`;
+        paramCount.style.display = "inline-block";
+        copyBtn.style.display = "inline-block";
+
+        // Generate syntax-highlighted preview
+        preview.innerHTML = formatSchemaWithSyntaxHighlighting(schemaObj);
+      }
+
+      function getExampleValue(param) {
+        if (param.example) {
+          try {
+            if (param.type === "array" || param.type === "object") {
+              return JSON.parse(param.example);
+            }
+            if (param.type === "boolean") {
+              return param.example === "true";
+            }
+            if (param.type === "number") {
+              return parseFloat(param.example);
+            }
+            return param.example;
+          } catch {
+            return param.example;
+          }
+        }
+
+        switch (param.type) {
+          case "string":
+            return "string_value";
+          case "number":
+            return 123;
+          case "boolean":
+            return true;
+          case "array":
+            return ["item1", "item2"];
+          case "object":
+            return { key: "value" };
+          default:
+            return "value";
+        }
+      }
+
+      function formatSchemaWithSyntaxHighlighting(schemaObj) {
+        let html = '<span class="syntax-keyword">dataLayer</span>';
+        html += '<span class="syntax-punctuation">.</span>';
+        html += '<span class="syntax-method">push</span>';
+        html += '<span class="syntax-punctuation">(</span>';
+        html += '<span class="syntax-brace">{</span>';
+
+        const entries = Object.entries(schemaObj);
+        entries.forEach(([key, value], index) => {
+          html += `\n  <span class="syntax-property">"${key}"</span><span class="syntax-punctuation">: </span>`;
+          html += formatValue(value, 1);
+          if (index < entries.length - 1) {
+            html += '<span class="syntax-punctuation">,</span>';
+          }
+        });
+
+        html += '\n<span class="syntax-brace">}</span>';
+        html += '<span class="syntax-punctuation">);</span>';
+
+        return html;
+      }
+
+      function formatValue(value, indent) {
+        const spaces = "  ".repeat(indent);
+
+        if (typeof value === "string") {
+          return `<span class="syntax-string">"${value}"</span>`;
+        } else if (typeof value === "number") {
+          return `<span class="syntax-number">${value}</span>`;
+        } else if (typeof value === "boolean") {
+          return `<span class="syntax-boolean">${value}</span>`;
+        } else if (Array.isArray(value)) {
+          if (value.length === 0) {
+            return `<span class="syntax-array">[]</span>`;
+          }
+          let html = '<span class="syntax-array">[</span>';
+          value.forEach((item, index) => {
+            if (index > 0) html += '<span class="syntax-punctuation">, </span>';
+            html += `<span class="syntax-string">"${item}"</span>`;
+          });
+          html += '<span class="syntax-array">]</span>';
+          return html;
+        } else if (typeof value === "object" && value !== null) {
+          const entries = Object.entries(value);
+          if (entries.length === 0) {
+            return '<span class="syntax-brace">{}</span>';
+          }
+
+          let html = "\n" + spaces + '<span class="syntax-brace">{</span>';
+          entries.forEach(([subKey, subValue], subIndex) => {
+            html += `\n${spaces}  <span class="syntax-property">"${subKey}"</span><span class="syntax-punctuation">: </span>`;
+            html += formatValue(subValue, indent + 1);
+            if (subIndex < entries.length - 1) {
+              html += '<span class="syntax-punctuation">,</span>';
+            }
+          });
+          html += `\n${spaces}<span class="syntax-brace">}</span>`;
+          return html;
+        }
+
+        return `<span class="syntax-string">"${value}"</span>`;
+      }
+
+      function copySchemaPreview() {
+        if (!selectedEvent) return;
+
+        const schemaObj = { event: selectedEvent.name };
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            schemaObj[blockKey] = {};
+            objectBlocks[blockKey].forEach((param) => {
+              schemaObj[blockKey][param.name] = getExampleValue(param);
+            });
+          }
+        });
+
+        const schemaCode = `dataLayer.push(${JSON.stringify(schemaObj, null, 2)});`;
+
+        navigator.clipboard.writeText(schemaCode).then(() => {
+          const btn = document.getElementById("copyPreviewBtn");
+          const originalText = btn.textContent;
+          btn.textContent = "✓ Copied!";
+          btn.style.background = "#22c55e";
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = "#3b82f6";
+          }, 2000);
+        });
+      }
+
+      function filterEvents(searchTerm) {
+        filteredEvents = GA4_EVENTS.filter(
+          (event) =>
+            event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.description
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            event.category.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+        renderEvents();
+      }
+
+      function filterParameters(searchTerm) {
+        filteredParameters = PARAMETERS.filter(
+          (param) =>
+            param.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            param.description
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            param.category.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+        renderParameters();
+      }
+
+      function filterEventsByCategory(category) {
+        // Update filter badges
+        document
+          .querySelectorAll("#eventCategories .filter-badge")
+          .forEach((badge) => {
+            badge.classList.remove("active");
+          });
+        event.target.classList.add("active");
+
+        filteredEvents = category
+          ? GA4_EVENTS.filter((e) => e.category === category)
+          : [...GA4_EVENTS];
+        renderEvents();
+      }
+
+      function filterParametersByCategory(category) {
+        // Update filter badges
+        document
+          .querySelectorAll("#paramCategories .filter-badge")
+          .forEach((badge) => {
+            badge.classList.remove("active");
+          });
+        event.target.classList.add("active");
+
+        filteredParameters = category
+          ? PARAMETERS.filter((p) => p.category === category)
+          : [...PARAMETERS];
+        renderParameters();
+      }
+
+      // Drag and Drop Handlers
+      function handleEventDragStart(e, event) {
+        e.dataTransfer.setData(
+          "text/plain",
+          JSON.stringify({ type: "event", data: event }),
+        );
+      }
+
+      function handleParameterDragStart(e, param) {
+        e.dataTransfer.setData(
+          "text/plain",
+          JSON.stringify({ type: "parameter", data: param }),
+        );
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        const blockKey = e.currentTarget.dataset.block;
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+
+        if (data.type === "parameter") {
+          addParameterToBlock(data.data, blockKey);
+        } else if (data.type === "event") {
+          selectEvent(data.data);
+        }
+      }
+
+      function copyToClipboard() {
+        const output = document.getElementById("schemaOutput");
+        navigator.clipboard.writeText(output.textContent).then(() => {
+          // Show feedback
+          const btn = event.target;
+          const originalText = btn.textContent;
+          btn.textContent = "Copied!";
+          btn.style.background = "#22c55e";
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = "#3b82f6";
+          }, 2000);
+        });
+      }
+
+      function downloadMarkdown() {
+        if (!selectedEvent) return;
+
+        let markdown = `# DataLayer Schema: ${selectedEvent.name}\n\n`;
+        markdown += `**Event Description:** ${selectedEvent.description}\n\n`;
+        markdown += `**Category:** ${selectedEvent.category}\n\n`;
+        markdown += `**Example Use Case:** ${selectedEvent.example}\n\n`;
+
+        markdown += `## Parameters\n\n`;
+        markdown += `| Parameter | Type | Category | Description | Example |\n`;
+        markdown += `|-----------|------|----------|-------------|---------|\n`;
+
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            objectBlocks[blockKey].forEach((param) => {
+              markdown += `| ${param.name} | ${param.type} | ${param.category} | ${param.description} | ${param.example} |\n`;
+            });
+          }
+        });
+
+        markdown += `\n## Implementation\n\n`;
+        markdown += `### DataLayer Push\n\`\`\`javascript\ndataLayer.push({\n  event: '${selectedEvent.name}'`;
+
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            markdown += `,\n  ${blockKey}: {`;
+            objectBlocks[blockKey].forEach((param, index) => {
+              const value =
+                param.type === "string" ? `'${param.example}'` : param.example;
+              markdown += `\n    ${param.name}: ${value}`;
+              if (index < objectBlocks[blockKey].length - 1) {
+                markdown += ",";
+              }
+              markdown += ` // ${param.description}`;
+            });
+            markdown += "\n  }";
+          }
+        });
+
+        markdown += "\n});\n```\n\n";
+
+        markdown += `### gtag Implementation\n\`\`\`javascript\ngtag('event', '${selectedEvent.name}', {`;
+
+        let hasParams = false;
+        Object.keys(objectBlocks).forEach((blockKey) => {
+          objectBlocks[blockKey].forEach((param) => {
+            const value =
+              param.type === "string" ? `'${param.example}'` : param.example;
+            markdown += `${hasParams ? "," : ""}\n  ${param.name}: ${value}`;
+            hasParams = true;
+          });
+        });
+
+        markdown += "\n});\n```\n\n";
+        markdown += `---\n*Generated by DataLayer Builder v4.0 - ${new Date().toLocaleString()}*\n`;
+
+        // Download markdown file
+        const blob = new Blob([markdown], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${selectedEvent.name}_schema.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function clearAll() {
+        objectBlocks = {
+          user_data: [],
+          page_data: [],
+          page_data_temp: [],
+          event_data: [],
+        };
+        Object.keys(objectBlocks).forEach(updateObjectBlock);
+        updateParameterCount();
+        generateSchema();
+      }
+
+      function resetSchema() {
+        selectedEvent = null;
+        document.getElementById("selectedEventName").textContent = "None";
+        clearAll();
+        renderEvents();
+      }
+
+      function toggleSection(sectionId) {
+        const content = document.getElementById(sectionId + "-content");
+        const toggle = document.getElementById(sectionId + "-toggle");
+        const card = content.closest(".card");
+
+        if (card.classList.contains("collapsed")) {
+          card.classList.remove("collapsed");
+          toggle.textContent = "▼";
+        } else {
+          card.classList.add("collapsed");
+          toggle.textContent = "▶";
+        }
+      }
+
+      // Initialize when page loads
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+
+      // Console welcome message
+      console.log("🎯 DataLayer Builder v4.0 - Complete Standalone Version");
+      console.log("🏥 Healthcare & Pharmaceutical GA4 Schema Generator");
+      console.log("✅ Full functionality available offline");
+      console.log("📊", PARAMETERS.length, "parameters loaded");
+      console.log("⚡", GA4_EVENTS.length, "events loaded");
+      console.log("🚀 Complete application functionality included!");
+    </script>
+  </body>
+</html>

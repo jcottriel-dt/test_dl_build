@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test DataLayer Builder</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #1a1a1a;
+        color: white;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .events-list,
+      .params-list {
+        background: #333;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        min-height: 200px;
+      }
+      .item {
+        background: #444;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .item:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>DataLayer Builder Test</h1>
+
+      <h2>Events</h2>
+      <div id="eventsList" class="events-list"></div>
+
+      <h2>Parameters</h2>
+      <div id="parametersList" class="params-list"></div>
+    </div>
+
+    <script>
+      const GA4_EVENTS = [
+        {
+          name: "page_view",
+          category: "page",
+          description: "Page view event",
+          example: "Homepage visit",
+        },
+        {
+          name: "click",
+          category: "engagement",
+          description: "Click event",
+          example: "Button click",
+        },
+        {
+          name: "search",
+          category: "search",
+          description: "Search event",
+          example: "Site search",
+        },
+      ];
+
+      const PARAMETERS = [
+        {
+          name: "drug_name",
+          type: "string",
+          category: "drug",
+          description: "Name of the drug",
+          example: "Metformin",
+        },
+        {
+          name: "user_id",
+          type: "string",
+          category: "user",
+          description: "User identifier",
+          example: "user123",
+        },
+        {
+          name: "page_title",
+          type: "string",
+          category: "page",
+          description: "Page title",
+          example: "Homepage",
+        },
+      ];
+
+      function loadEvents() {
+        console.log("Loading events...");
+        const container = document.getElementById("eventsList");
+        console.log("Events container:", container);
+        console.log("GA4_EVENTS:", GA4_EVENTS);
+
+        if (!container) {
+          console.error("Events container not found!");
+          return;
+        }
+
+        container.innerHTML = "";
+        GA4_EVENTS.forEach((event) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `<strong>${event.name}</strong> - ${event.description}`;
+          container.appendChild(div);
+        });
+        console.log("Events loaded");
+      }
+
+      function loadParameters() {
+        console.log("Loading parameters...");
+        const container = document.getElementById("parametersList");
+        console.log("Parameters container:", container);
+        console.log("PARAMETERS:", PARAMETERS);
+
+        if (!container) {
+          console.error("Parameters container not found!");
+          return;
+        }
+
+        container.innerHTML = "";
+        PARAMETERS.forEach((param) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `<strong>${param.name}</strong> (${param.type}) - ${param.description}`;
+          container.appendChild(div);
+        });
+        console.log("Parameters loaded");
+      }
+
+      function init() {
+        console.log("Initializing...");
+        loadEvents();
+        loadParameters();
+        console.log("Initialization complete");
+      }
+
+      // Initialize when page loads
+      document.addEventListener("DOMContentLoaded", init);
+
+      // Also try immediate initialization in case DOMContentLoaded already fired
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    </script>
+  </body>
+</html>
