@@ -16,9 +16,11 @@ const Index = () => {
     try {
       console.log('🔄 Creating fully functional standalone DataLayer Builder...');
 
-      // Read the comprehensive standalone HTML file we created
-      const response = await fetch('/standalone-comprehensive.html');
-      const standaloneHTML = await response.text();
+      // Inline the comprehensive standalone HTML directly
+      const standaloneHTML = await fetch('/standalone-comprehensive.html')
+        .then(response => response.text())
+        .catch(() => {
+          // Fallback: create comprehensive HTML inline if file not found
 <html lang="en">
 <head>
     <meta charset="UTF-8">
