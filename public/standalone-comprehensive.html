@@ -710,7 +710,7 @@
                   console.log('Parameter categories:', categories);
                   categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterParametersByCategory(\'\')">All</div>';
                   categories.forEach(cat => {
-                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterParametersByCategory('\${cat.replace(/'/g, '\\\'')}')">\${cat}</div>\`;
+                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterParametersByCategory('\${cat}')">\${cat}</div>\`;
                   });
 
                   renderParameters();
