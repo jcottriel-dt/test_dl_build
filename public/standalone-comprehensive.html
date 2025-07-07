@@ -656,11 +656,16 @@
               }
 
               function loadEvents() {
+                  console.log('Loading events...');
                   const container = document.getElementById('eventsList');
                   const categoriesContainer = document.getElementById('eventCategories');
 
+                  console.log('Events container:', container);
+                  console.log('Categories container:', categoriesContainer);
+
                   // Load category filters
                   const categories = [...new Set(GA4_EVENTS.map(e => e.category))];
+                  console.log('Event categories:', categories);
                   categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterEventsByCategory(\'\')">All</div>';
                   categories.forEach(cat => {
                       categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterEventsByCategory('\${cat}')">\${cat}</div>\`;
