@@ -1644,10 +1644,32 @@
         markdown += `### DataLayer Push\n\`\`\`javascript\ndataLayer.push({\n  event: '${selectedEvent.name}'`;
 
         Object.keys(objectBlocks).forEach((blockKey) => {
+          if (objectBlocks[blockKey].length > 0) {
+            markdown += `,\n  ${blockKey}: {`;
+            objectBlocks[blockKey].forEach((param, index) => {
+              const value =
+                param.type === "string" ? `'${param.example}'` : param.example;
+              markdown += `\n    ${param.name}: ${value}`;
+              if (index < objectBlocks[blockKey].length - 1) {
+                markdown += ",";
+              }
+              markdown += ` // ${param.description}`;
+            });
+            markdown += "\n  }";
+          }
+        });
+
+        markdown += "\n});\n```\n\n";
+
+        markdown += `### gtag Implementation\n\`\`\`javascript\ngtag('event', '${selectedEvent.name}', {`;
+
+        let hasParams = false;
+        Object.keys(objectBlocks).forEach((blockKey) => {
           objectBlocks[blockKey].forEach((param) => {
             const value =
               param.type === "string" ? `'${param.example}'` : param.example;
-            markdown += `,\n  ${param.name}: ${value}`;
+            markdown += `${hasParams ? "," : ""}\n  ${param.name}: ${value}`;
+            hasParams = true;
           });
         });
 
