@@ -18,7 +18,7 @@ const Index = () => {
         "🔄 Creating fully functional standalone DataLayer Builder...",
       );
 
-      // Create a complete working application in vanilla JavaScript
+      // Create a complete working application that matches the full React version
       const standaloneHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,41 +28,41 @@ const Index = () => {
     <meta name="description" content="Healthcare & Pharmaceutical GA4 DataLayer Schema Builder">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #f8fafc;
             min-height: 100vh;
         }
         .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
-        .header { 
-            background: rgba(255, 255, 255, 0.1); 
+        .header {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px; 
-            padding: 1.5rem 2rem; 
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
             margin-bottom: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .title { 
-            font-size: 2.5rem; 
-            font-weight: bold; 
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
             background: linear-gradient(45deg, #22c55e, #16a34a);
-            -webkit-background-clip: text; 
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .subtitle { opacity: 0.8; margin-top: 0.5rem; }
         .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
-        .card { 
-            background: rgba(255, 255, 255, 0.1); 
+        .card {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px; 
+            border-radius: 12px;
             padding: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .card h3 { color: #22c55e; margin-bottom: 1rem; }
         .param-list { max-height: 400px; overflow-y: auto; }
-        .param-item { 
+        .param-item {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
@@ -71,28 +71,28 @@ const Index = () => {
             cursor: pointer;
             transition: all 0.2s;
         }
-        .param-item:hover { 
+        .param-item:hover {
             background: rgba(34, 197, 94, 0.1);
             border-color: rgba(34, 197, 94, 0.3);
         }
         .param-name { font-weight: bold; color: #22c55e; }
         .param-desc { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
-        .schema-output { 
-            background: #1e293b; 
-            border-radius: 8px; 
-            padding: 1rem; 
+        .schema-output {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
             font-family: 'Courier New', monospace;
             white-space: pre-wrap;
             max-height: 300px;
             overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn { 
-            background: #22c55e; 
-            color: white; 
-            border: none; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 6px; 
+        .btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
             margin: 0.5rem 0.5rem 0.5rem 0;
@@ -100,8 +100,8 @@ const Index = () => {
         .btn:hover { background: #16a34a; }
         .btn-secondary { background: #3b82f6; }
         .btn-secondary:hover { background: #2563eb; }
-        .selected-params { 
-            min-height: 200px; 
+        .selected-params {
+            min-height: 200px;
             background: rgba(59, 130, 246, 0.1);
             border: 2px dashed rgba(59, 130, 246, 0.3);
             border-radius: 8px;
@@ -117,7 +117,7 @@ const Index = () => {
             display: inline-block;
             cursor: pointer;
         }
-        .badge { 
+        .badge {
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             padding: 0.25rem 0.5rem;
@@ -175,11 +175,11 @@ const Index = () => {
                     <div class="selected-params" id="selectedParams">
                         <p style="opacity: 0.7; text-align: center;">Click parameters on the left to add them here</p>
                     </div>
-                    
+
                     <button class="btn" onclick="generateSchema()">Generate Schema</button>
                     <button class="btn btn-secondary" onclick="exportMarkdown()">Export Markdown</button>
                     <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
-                    
+
                     <h3 style="margin-top: 2rem;">📄 Generated Code</h3>
                     <div class="schema-output" id="schemaOutput">// Select an event and add parameters to generate code</div>
                 </div>
@@ -228,7 +228,7 @@ const Index = () => {
         function loadParameters() {
             const container = document.getElementById('paramList');
             container.innerHTML = '';
-            
+
             PARAMETERS.forEach(param => {
                 const div = document.createElement('div');
                 div.className = 'param-item';
@@ -262,7 +262,7 @@ const Index = () => {
                 container.innerHTML = '<p style="opacity: 0.7; text-align: center;">Click parameters on the left to add them here</p>';
                 return;
             }
-            
+
             container.innerHTML = '';
             selectedParams.forEach(param => {
                 const div = document.createElement('div');
@@ -276,7 +276,7 @@ const Index = () => {
 
         function generateSchema() {
             const output = document.getElementById('schemaOutput');
-            
+
             if (!selectedEvent) {
                 output.textContent = '// Select an event to generate code';
                 return;
@@ -350,7 +350,7 @@ dataLayer.push({
             markdown += \`
 });
 
-// gtag Implementation  
+// gtag Implementation
 gtag('event', '\${selectedEvent}', {\`;
 
             selectedParams.forEach((param, index) => {
@@ -594,7 +594,7 @@ Generated by DataLayer Builder v3.0 - \${new Date().toLocaleString()}
                     </div>
                     <div>
                       <h3 className="font-semibold text-brand-600 mb-2">
-                        ���� Professional GA4 Tools
+                        🎯 Professional GA4 Tools
                       </h3>
                       <ul className="text-sm text-muted-foreground space-y-1">
                         <li>• 35+ comprehensive GA4 events</li>
