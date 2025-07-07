@@ -39,7 +39,7 @@ const Index = () => {
                     variant="outline"
                     className="text-xs bg-brand-500/10 text-brand-600 border-brand-500/20"
                   >
-                    v2.0
+                    v3.0
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground hidden sm:block">
