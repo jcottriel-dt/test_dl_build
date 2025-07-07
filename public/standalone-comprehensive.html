@@ -668,7 +668,7 @@
                   console.log('Event categories:', categories);
                   categoriesContainer.innerHTML = '<div class="filter-badge active" onclick="filterEventsByCategory(\'\')">All</div>';
                   categories.forEach(cat => {
-                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterEventsByCategory('\${cat}')">\${cat}</div>\`;
+                      categoriesContainer.innerHTML += \`<div class="filter-badge" onclick="filterEventsByCategory('\${cat.replace(/'/g, '\\\'')}')">\${cat}</div>\`;
                   });
 
                   renderEvents();
